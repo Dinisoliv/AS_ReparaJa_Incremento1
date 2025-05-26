@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ReparaJá - Create Client Account</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <nav class="navbar">
+    <div class="navbar-logo">ReparaJá</div>
+    <ul class="navbar-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="services.html">Services</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+  </nav>
+
+  <main class="main-content">
+    <h1>Create Client Account</h1>
+    <form action="#" method="post" class="create-account-form" onsubmit="return validateForm()">
+      <label for="username"><b>Username:</b></label><br/>
+      <input type="text" id="username" name="username" required style="width: 300px; height: 30px; font-size: 16px; padding: 5px;" />
+      <p class="input-info" style="font-size: 12px; margin-top: 2px; margin-bottom: 10px;">Username cannot contain numbers.</p>
+      <label for="password"><b>Password:</b></label><br/>
+      <input type="password" id="password" name="password" required style="width: 300px; height: 30px; font-size: 16px; padding: 5px;" /><br/>
+      <label for="email"><b>Email:</b></label><br/>
+      <input type="email" id="email" name="email" required style="width: 300px; height: 30px; font-size: 16px; padding: 5px;" />
+      <p class="input-info" style="font-size: 12px; margin-top: 2px; margin-bottom: 10px;">Please enter a valid email address.</p>
+      <label for="phone"><b>Phone Number:</b></label><br/>
+      <input type="tel" id="phone" name="phone" required style="width: 300px; height: 30px; font-size: 16px; padding: 5px;" />
+      <p class="input-info" style="font-size: 12px; margin-top: 2px; margin-bottom: 10px;">Phone number must contain only numbers.</p>
+      <label for="address"><b>Address:</b></label><br/>
+      <input type="text" id="address" name="address" placeholder="Ex: Rua da Alegria 123, 4000-123 Porto" required style="width: 300px; height: 30px; font-size: 16px; padding: 5px;" />
+      <p class="input-info" style="font-size: 12px; margin-top: 2px; margin-bottom: 10px;">Address must follow the Portugal format: street name, number, postal code, city.</p>
+      <label for="dob"><b>Date of Birth:</b></label><br/>
+      <input type="date" id="dob" name="dob" required style="width: 300px; height: 30px; font-size: 16px; padding: 5px;" />
+      <p class="input-info" style="font-size: 12px; margin-top: 2px; margin-bottom: 10px;">You must be at least 10 years old.</p><br/>
+      <button type="submit" class="btn btn-client">Create Account</button>
+    </form>
+    <script>
+      function validateForm() {
+        const username = document.getElementById('username').value.trim();
+        const phone = document.getElementById('phone').value.trim();
+        const address = document.getElementById('address').value.trim();
+        const dob = document.getElementById('dob').value;
+
+        // Username validation: no numbers allowed
+        if (/\d/.test(username)) {
+          alert('Username cannot contain numbers.');
+          return false;
+        }
+
+        // Phone validation: only digits allowed
+        if (!/^\d+$/.test(phone)) {
+          alert('Phone number must contain only numbers.');
+          return false;
+        }
+
+        // Address validation: Portugal format check (street name, number, postal code, city)
+        const portugalAddressRegex = /^[a-zA-Z\s]+ \d+,\s\d{4}-\d{3} [a-zA-Z\s]+$/;
+        if (!portugalAddressRegex.test(address)) {
+          alert('Address must follow the Portugal format: street name, number, postal code, city.');
+          return false;
+        }
+
+        // Date of birth validation: user must be older than 10 years
+        if (!dob) {
+          alert('Please enter your date of birth.');
+          return false;
+        }
+        const dobDate = new Date(dob);
+        const today = new Date();
+        const age = today.getFullYear() - dobDate.getFullYear();
+        const m = today.getMonth() - dobDate.getMonth();
+        if (m < 0 || (m === 0 && today.getDate() < dobDate.getDate())) {
+          age--;
+        }
+        if (age < 10) {
+          alert('You must be at least 10 years old.');
+          return false;
+        }
+
+        return true;
+      }
+    </script>
+  </main>
+</body>
+</html>
