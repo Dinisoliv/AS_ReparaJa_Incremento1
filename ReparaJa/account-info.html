@@ -16,8 +16,55 @@
   </nav>
   <main class="main-content">
     <h1>Account Information</h1>
-    <p>View and update your personal account details here.</p>
-    <!-- Account info and edit form goes here -->
+    <div id="account-details">
+      <!-- Client info will be loaded here -->
+    </div>
   </main>
+  <script>
+    // Helper to get users from localStorage
+    function getUsers() {
+      const users = localStorage.getItem('users');
+      return users ? JSON.parse(users) : [];
+    }
+
+    // Try to get logged client from sessionStorage, fallback to default
+    function getCurrentClient() {
+      const logged = sessionStorage.getItem('loggedClient');
+      const users = getUsers();
+      let client = null;
+      if (logged) {
+        client = users.find(u =>
+          u.username && u.username.toLowerCase() === logged.toLowerCase()
+        );
+      }
+      if (!client) {
+        // fallback to default client
+        client = users.find(u =>
+          u.username && u.username.toLowerCase() === "client123"
+        );
+      }
+      return client;
+    }
+
+    function renderAccountInfo() {
+      const client = getCurrentClient();
+      const container = document.getElementById('account-details');
+      if (!client) {
+        container.innerHTML = "<p>No client information found.</p>";
+        return;
+      }
+      container.innerHTML = `
+        <table class="account-table">
+          <tr><th>Username</th><td>${client.username || ""}</td></tr>
+          <tr><th>Email</th><td>${client.email || ""}</td></tr>
+          <tr><th>Phone</th><td>${client.phone || ""}</td></tr>
+          <tr><th>Address</th><td>${client.address || ""}</td></tr>
+          <tr><th>Date of Birth</th><td>${client.dob || ""}</td></tr>
+        </table>
+      `;
+    }
+
+    renderAccountInfo();
+  </script>
 </body>
 </html>
