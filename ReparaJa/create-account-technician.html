@@ -49,8 +49,21 @@
       <button type="submit" class="btn btn-client">Create Account</button>
     </form>
     <script>
+      function getTechnicians() {
+        const techs = localStorage.getItem('technicians');
+        return techs ? JSON.parse(techs) : [];
+      }
+
+      function saveTechnician(technician) {
+        const techs = getTechnicians();
+        techs.push(technician);
+        localStorage.setItem('technicians', JSON.stringify(techs));
+      }
+
       function validateForm() {
         const username = document.getElementById('username').value.trim();
+        const password = document.getElementById('password').value;
+        const email = document.getElementById('email').value.trim();
         const phone = document.getElementById('phone').value.trim();
         const address = document.getElementById('address').value.trim();
         const dob = document.getElementById('dob').value;
@@ -61,6 +74,13 @@
         // Username validation: no numbers allowed
         if (/\d/.test(username)) {
           alert('Username cannot contain numbers.');
+          return false;
+        }
+
+        // Username uniqueness check
+        const techs = getTechnicians();
+        if (techs.some(t => t.username.toLowerCase() === username.toLowerCase())) {
+          alert('This username is already taken. Please choose another.');
           return false;
         }
 
@@ -112,7 +132,11 @@
           return false;
         }
 
-        return true;
+        // Save technician to localStorage
+        saveTechnician({ username, password, email, phone, address, dob, experience, specialization });
+        alert('Account created successfully! You can now log in.');
+        // Optionally, redirect to login page here
+        return false; // Prevent form submission for demo
       }
     </script>
   </main>

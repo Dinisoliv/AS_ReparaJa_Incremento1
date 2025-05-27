@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ReparaJá - Client Dashboard</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <nav class="navbar">
+    <div class="navbar-logo">ReparaJá</div>
+    <ul class="navbar-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="services.html">Services</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="contact.html">Contact</a></li>
+      <li><a href="login-client.html" id="logoutBtn">Logout</a></li>
+    </ul>
+  </nav>
+
+  <main class="main-content">
+    <h1>Welcome, <span id="clientName"></span>!</h1>
+    <div class="dashboard-options">
+      <div class="dashboard-card">
+        <h2>Schedule a Service</h2>
+        <p>Book a new repair or maintenance service with our technicians.</p>
+        <a href="schedule-service.html" class="btn btn-client">Schedule</a>
+      </div>
+      <div class="dashboard-card">
+        <h2>Booked Services</h2>
+        <p>View and manage your upcoming booked services.</p>
+        <a href="booked-services.html" class="btn btn-client">View Bookings</a>
+      </div>
+      <div class="dashboard-card">
+        <h2>Service History</h2>
+        <p>Check your past services and their details.</p>
+        <a href="service-history.html" class="btn btn-client">History</a>
+      </div>
+      <div class="dashboard-card">
+        <h2>Account Information</h2>
+        <p>View and update your personal account details.</p>
+        <a href="account-info.html" class="btn btn-client">Account Info</a>
+      </div>
+      <div class="dashboard-card">
+        <h2>Support</h2>
+        <p>Need help? Contact our support team.</p>
+        <a href="contact.html" class="btn btn-client">Contact Support</a>
+      </div>
+    </div>
+  </main>
+  <script>
+    // Example: Display logged-in client name from localStorage/sessionStorage
+    // (You should set this value after login)
+    document.getElementById('clientName').textContent =
+      sessionStorage.getItem('loggedClient') || 'Client';
+
+    // Optionally, handle logout
+    document.getElementById('logoutBtn').addEventListener('click', function() {
+      sessionStorage.removeItem('loggedClient');
+    });
+  </script>
+</body>
+</html>

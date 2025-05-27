@@ -19,14 +19,74 @@
 
   <main class="main-content">
     <h1>Technician Login</h1>
-    <form action="#" method="post" class="login-form">
+    <form action="#" method="post" class="login-form" id="loginForm">
       <label for="username">Username or Email:</label><br/>
       <input type="text" id="username" name="username" required /><br/>
       <label for="password">Password:</label><br/>
       <input type="password" id="password" name="password" required /><br/>
       <button type="submit" class="btn btn-technician">Login</button>
+      <p id="login-error" style="color: red; margin-top: 10px; display: none;"></p>
     </form>
     <p>Don't have an account? <a href="create-account-technician.html" class="btn btn-technician">Create an Account</a></p>
+    <script>
+      // Ensure default technician exists in localStorage
+      function ensureDefaultTechnician() {
+        const techs = localStorage.getItem('technicians');
+        let techsArr = techs ? JSON.parse(techs) : [];
+        const defaultUsername = "Technician123";
+        const defaultEmail = "technician123@reparaja.pt";
+        const exists = techsArr.some(t =>
+          (t.username && t.username.toLowerCase() === defaultUsername.toLowerCase()) ||
+          (t.email && t.email.toLowerCase() === defaultEmail.toLowerCase())
+        );
+        if (!exists) {
+          techsArr.push({
+            username: "Technician123",
+            password: "123",
+            email: "technician123@reparaja.pt",
+            phone: "934567890",
+            address: "Rua dos Técnicos 10, 4000-222 Porto",
+            dob: "1990-05-15",
+            experience: "15",
+            specialization: "Eletricidade",
+            capabilities: "default.pdf"
+          });
+          localStorage.setItem('technicians', JSON.stringify(techsArr));
+        }
+      }
+
+      ensureDefaultTechnician();
+
+      function getTechnicians() {
+        const techs = localStorage.getItem('technicians');
+        return techs ? JSON.parse(techs) : [];
+      }
+
+      document.getElementById('loginForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const usernameOrEmail = document.getElementById('username').value.trim();
+        const password = document.getElementById('password').value;
+        const techs = getTechnicians();
+        const tech = techs.find(t =>
+          (t.username && t.username.toLowerCase() === usernameOrEmail.toLowerCase()) ||
+          (t.email && t.email.toLowerCase() === usernameOrEmail.toLowerCase())
+        );
+        const errorMsg = document.getElementById('login-error');
+        if (!tech) {
+          errorMsg.textContent = "Technician not found. Please check your username/email.";
+          errorMsg.style.display = "block";
+          return;
+        }
+        if (tech.password !== password) {
+          errorMsg.textContent = "Incorrect password. Please try again.";
+          errorMsg.style.display = "block";
+          return;
+        }
+        errorMsg.style.display = "none";
+        alert("Technician login successful!");
+        // Optionally, redirect to technician dashboard here
+      });
+    </script>
   </main>
 </body>
 </html>

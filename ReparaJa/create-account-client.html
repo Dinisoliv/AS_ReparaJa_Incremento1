@@ -40,8 +40,21 @@
       <button type="submit" class="btn btn-client">Create Account</button>
     </form>
     <script>
+      function getUsers() {
+        const users = localStorage.getItem('users');
+        return users ? JSON.parse(users) : [];
+      }
+
+      function saveUser(user) {
+        const users = getUsers();
+        users.push(user);
+        localStorage.setItem('users', JSON.stringify(users));
+      }
+
       function validateForm() {
         const username = document.getElementById('username').value.trim();
+        const password = document.getElementById('password').value;
+        const email = document.getElementById('email').value.trim();
         const phone = document.getElementById('phone').value.trim();
         const address = document.getElementById('address').value.trim();
         const dob = document.getElementById('dob').value;
@@ -49,6 +62,13 @@
         // Username validation: no numbers allowed
         if (/\d/.test(username)) {
           alert('Username cannot contain numbers.');
+          return false;
+        }
+
+        // Username uniqueness check
+        const users = getUsers();
+        if (users.some(u => u.username.toLowerCase() === username.toLowerCase())) {
+          alert('This username is already taken. Please choose another.');
           return false;
         }
 
@@ -72,7 +92,7 @@
         }
         const dobDate = new Date(dob);
         const today = new Date();
-        const age = today.getFullYear() - dobDate.getFullYear();
+        let age = today.getFullYear() - dobDate.getFullYear();
         const m = today.getMonth() - dobDate.getMonth();
         if (m < 0 || (m === 0 && today.getDate() < dobDate.getDate())) {
           age--;
@@ -82,7 +102,11 @@
           return false;
         }
 
-        return true;
+        // Save user to localStorage
+        saveUser({ username, password, email, phone, address, dob });
+        alert('Account created successfully! You can now log in.');
+        // Optionally, redirect to login page here
+        return false; // Prevent form submission for demo
       }
     </script>
   </main>

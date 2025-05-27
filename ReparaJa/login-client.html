@@ -19,14 +19,72 @@
 
   <main class="main-content">
     <h1>Client Login</h1>
-    <form action="#" method="post" class="login-form">
+    <form action="#" method="post" class="login-form" id="loginForm">
       <label for="username">Username or Email:</label><br/>
       <input type="text" id="username" name="username" required /><br/>
       <label for="password">Password:</label><br/>
       <input type="password" id="password" name="password" required /><br/>
       <button type="submit" class="btn btn-client">Login</button>
+      <p id="login-error" style="color: red; margin-top: 10px; display: none;"></p>
     </form>
     <p>Don't have an account? <a href="create-account-client.html" class="btn btn-client">Create an Account</a></p>
+    <script>
+      // Ensure default client exists in localStorage
+      function ensureDefaultClient() {
+        const users = localStorage.getItem('users');
+        let usersArr = users ? JSON.parse(users) : [];
+        const defaultUsername = "Client123";
+        const defaultEmail = "client123@reparaja.pt";
+        // Check if default client already exists
+        const exists = usersArr.some(u =>
+          (u.username && u.username.toLowerCase() === defaultUsername.toLowerCase()) ||
+          (u.email && u.email.toLowerCase() === defaultEmail.toLowerCase())
+        );
+        if (!exists) {
+          usersArr.push({
+            username: "Client123",
+            password: "123",
+            email: "client123@reparaja.pt",
+            phone: "912345678",
+            address: "Rua Central 1, 1000-001 Lisboa",
+            dob: "2000-01-01"
+          });
+          localStorage.setItem('users', JSON.stringify(usersArr));
+        }
+      }
+
+      ensureDefaultClient();
+
+      function getUsers() {
+        const users = localStorage.getItem('users');
+        return users ? JSON.parse(users) : [];
+      }
+
+      document.getElementById('loginForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const usernameOrEmail = document.getElementById('username').value.trim();
+        const password = document.getElementById('password').value;
+        const users = getUsers();
+        const user = users.find(u =>
+          (u.username && u.username.toLowerCase() === usernameOrEmail.toLowerCase()) ||
+          (u.email && u.email.toLowerCase() === usernameOrEmail.toLowerCase())
+        );
+        const errorMsg = document.getElementById('login-error');
+        if (!user) {
+          errorMsg.textContent = "User not found. Please check your username/email.";
+          errorMsg.style.display = "block";
+          return;
+        }
+        if (user.password !== password) {
+          errorMsg.textContent = "Incorrect password. Please try again.";
+          errorMsg.style.display = "block";
+          return;
+        }
+        errorMsg.style.display = "none";
+        alert("Login successful!");
+        // Optionally, redirect to client dashboard here
+      });
+    </script>
   </main>
 </body>
 </html>
