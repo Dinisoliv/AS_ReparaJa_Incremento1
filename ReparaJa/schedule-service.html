@@ -5,19 +5,331 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Schedule a Service - ReparaJá</title>
   <link rel="stylesheet" href="styles.css" />
+  <style>
+    .filter-container {
+      margin: 1rem auto;
+      max-width: 600px;
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .filter-container label {
+      font-weight: bold;
+      margin-right: 0.5rem;
+    }
+    .technician-list {
+      max-width: 800px;
+      margin: 2rem auto;
+      padding: 0;
+      list-style: none;
+    }
+    .technician-item {
+      background-color: white;
+      border: 1px solid #2a4d14;
+      border-radius: 5px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    .technician-item:hover {
+      background-color: #a3d977;
+      color: white;
+    }
+    .schedule-form-container {
+      max-width: 600px;
+      margin: 2rem auto;
+      background-color: white;
+      border: 1px solid #2a4d14;
+      border-radius: 5px;
+      padding: 1rem 2rem;
+      display: none;
+    }
+    .schedule-form-container h2 {
+      margin-top: 0;
+    }
+    .schedule-form label {
+      display: block;
+      margin-top: 1rem;
+      font-weight: bold;
+    }
+    .schedule-form input[type="date"],
+    .schedule-form input[type="time"] {
+      width: 100%;
+      padding: 0.5rem;
+      font-size: 1rem;
+      margin-top: 0.5rem;
+    }
+    .schedule-form button {
+      margin-top: 1.5rem;
+      background-color: #4caf50;
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      font-size: 1rem;
+      font-weight: 600;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    .schedule-form button:hover {
+      background-color: #388e3c;
+    }
+    .confirmation-message {
+      max-width: 600px;
+      margin: 2rem auto;
+      background-color: #a3d977;
+      color: white;
+      padding: 1rem 2rem;
+      border-radius: 5px;
+      display: none;
+      text-align: center;
+      font-weight: bold;
+    }
+  </style>
 </head>
 <body>
   <nav class="navbar">
-    <div class="navbar-logo">ReparaJá</div>
+    <div class="navbar-logo">
+      <img src="ReparaJaLogo.png" alt="ReparaJá Logo" style="height: 30px; vertical-align: middle; margin-right: 8px;" />
+      ReparaJá
+    </div>
     <ul class="navbar-links">
       <li><a href="client-dashboard.html">Dashboard</a></li>
+      <li><a href="schedule-service.html">Schedule Service</a></li>
+      <li><a href="booked-services.html">Booked Services</a></li>
+      <li><a href="service-history.html">Service History</a></li>
+      <li><a href="account-info.html">Account Info</a></li>
+      <li><a href="contact.html">Contact</a></li>
       <li><a href="login-client.html" id="logoutBtn">Logout</a></li>
     </ul>
   </nav>
   <main class="main-content">
     <h1>Schedule a Service</h1>
     <p>Here you can book a new repair or maintenance service.</p>
-    <!-- Add your booking form here -->
+
+    <div class="filter-container">
+      <div>
+        <label for="specializationFilter">Filter by Specialization:</label>
+        <input type="text" id="specializationFilter" placeholder="e.g. Refrigerators" />
+      </div>
+      <div>
+        <label for="locationFilter">Filter by Location:</label>
+        <input type="text" id="locationFilter" placeholder="e.g. Porto" />
+      </div>
+      <div>
+        <button id="clearFiltersBtn" class="btn btn-client" style="margin-top: 1.8rem;">Clear Filters</button>
+      </div>
+    </div>
+
+    <ul id="technicianList" class="technician-list"></ul>
+
+    <div id="scheduleFormContainer" class="schedule-form-container">
+      <h2>Schedule Service with <span id="selectedTechnicianName"></span></h2>
+      <form id="scheduleForm" class="schedule-form">
+        <label for="serviceDate">Select Date:</label>
+        <input type="date" id="serviceDate" name="serviceDate" required min="" />
+        <label for="serviceTime">Select Time:</label>
+        <input type="time" id="serviceTime" name="serviceTime" required />
+        <button type="submit">Confirm Scheduling</button>
+        <button type="button" id="cancelScheduleBtn" style="margin-left: 1rem; background-color: #a3d977;">Cancel</button>
+      </form>
+    </div>
+
+    <div id="confirmationMessage" class="confirmation-message"></div>
   </main>
+
+  <script>
+    function getTechnicians() {
+      const techs = localStorage.getItem('technicians');
+      return techs ? JSON.parse(techs) : [];
+    }
+
+    // Add sample technicians to localStorage for testing
+    function addSampleTechnicians() {
+      const sampleTechs = [
+        {
+          username: 'Technician123',
+          password: '123',
+          email: 'technician123@reparaja.pt',
+          phone: '934567890',
+          address: 'Rua dos Técnicos 10, 4000-222 Porto',
+          dob: '1990-05-15',
+          experience: '15',
+          specialization: 'Refrigerators',
+          capabilities: 'default.pdf'
+        },
+        {
+          username: 'TechMaria',
+          password: 'abc',
+          email: 'maria@reparaja.pt',
+          phone: '912345678',
+          address: 'Avenida da Liberdade 45, 4000-123 Porto',
+          dob: '1985-08-20',
+          experience: '10',
+          specialization: 'Washing Machines',
+          capabilities: 'maria.pdf'
+        },
+        {
+          username: 'JoaoFix',
+          password: 'pass',
+          email: 'joao@reparaja.pt',
+          phone: '967890123',
+          address: 'Rua do Comércio 12, 4000-456 Porto',
+          dob: '1980-02-10',
+          experience: '20',
+          specialization: 'Microwaves',
+          capabilities: 'joao.pdf'
+        }
+      ];
+      localStorage.setItem('technicians', JSON.stringify(sampleTechs));
+    }
+
+    const specializationFilter = document.getElementById('specializationFilter');
+    const locationFilter = document.getElementById('locationFilter');
+    const clearFiltersBtn = document.getElementById('clearFiltersBtn');
+    const technicianList = document.getElementById('technicianList');
+    const scheduleFormContainer = document.getElementById('scheduleFormContainer');
+    const selectedTechnicianName = document.getElementById('selectedTechnicianName');
+    const scheduleForm = document.getElementById('scheduleForm');
+    const confirmationMessage = document.getElementById('confirmationMessage');
+    const cancelScheduleBtn = document.getElementById('cancelScheduleBtn');
+    const serviceDateInput = document.getElementById('serviceDate');
+
+    let filteredTechnicians = [];
+    let selectedTechnician = null;
+
+    function filterTechnicians() {
+      const specializationValue = specializationFilter.value.trim().toLowerCase();
+      const locationValue = locationFilter.value.trim().toLowerCase();
+
+      const allTechnicians = getTechnicians();
+
+      filteredTechnicians = allTechnicians.filter(tech => {
+        const specializationMatch = specializationValue === '' || (tech.specialization && tech.specialization.toLowerCase().includes(specializationValue));
+        const locationMatch = locationValue === '' || (tech.address && tech.address.toLowerCase().includes(locationValue));
+        return specializationMatch && locationMatch;
+      });
+
+      renderTechnicianList();
+    }
+
+    function renderTechnicianList() {
+      technicianList.innerHTML = '';
+      if (filteredTechnicians.length === 0) {
+        technicianList.innerHTML = '<li>No technicians found matching the filters.</li>';
+        return;
+      }
+      filteredTechnicians.forEach(tech => {
+        const li = document.createElement('li');
+        li.className = 'technician-item';
+        li.tabIndex = 0;
+        li.innerHTML = `
+        <strong>${tech.username}</strong><br/>
+        Specialization: ${tech.specialization}<br/>
+        Location: ${tech.address}<br/>
+        Experience: ${tech.experience} years<br/>
+        Phone: ${tech.phone}<br/>
+        Evaluation Score: ${getTechnicianScore(tech.username)}
+        `;
+        li.addEventListener('click', () => {
+          selectedTechnician = tech;
+          showScheduleForm();
+        });
+        li.addEventListener('keypress', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            selectedTechnician = tech;
+            showScheduleForm();
+          }
+        });
+        technicianList.appendChild(li);
+      });
+    }
+
+    function showScheduleForm() {
+      selectedTechnicianName.textContent = selectedTechnician.username;
+      scheduleFormContainer.style.display = 'block';
+      confirmationMessage.style.display = 'none';
+      technicianList.style.display = 'none';
+      specializationFilter.disabled = true;
+      locationFilter.disabled = true;
+      clearFiltersBtn.disabled = true;
+      // Set minimum date to today
+      const today = new Date().toISOString().split('T')[0];
+      serviceDateInput.min = today;
+      scheduleForm.reset();
+    }
+
+    function getEvaluations() {
+      const evals = localStorage.getItem('evaluations');
+      return evals ? JSON.parse(evals) : [];
+    }
+
+    function getTechnicianScore(username) {
+      const evaluations = getEvaluations();
+      const techEvals = evaluations.filter(e => e.technician === username);
+      if (techEvals.length === 0) return 'No ratings';
+      const sum = techEvals.reduce((acc, e) => acc + e.rating, 0);
+      return (sum / techEvals.length).toFixed(2);
+    }
+
+    function hideScheduleForm() {
+      scheduleFormContainer.style.display = 'none';
+      technicianList.style.display = 'block';
+      specializationFilter.disabled = false;
+      locationFilter.disabled = false;
+      clearFiltersBtn.disabled = false;
+      confirmationMessage.style.display = 'none';
+      selectedTechnician = null;
+    }
+
+    scheduleForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const date = scheduleForm.serviceDate.value;
+      const time = scheduleForm.serviceTime.value;
+      if (!date || !time) {
+        alert('Please select both date and time.');
+        return;
+      }
+
+      // Save booking to localStorage
+      const client = sessionStorage.getItem('loggedClient');
+      if (!client) {
+        alert('You must be logged in to schedule a service.');
+        return;
+      }
+      const bookings = JSON.parse(localStorage.getItem('bookings') || '[]');
+      bookings.push({
+        client,
+        technician: selectedTechnician.username,
+        date,
+        time,
+        status: 'Scheduled'
+      });
+      localStorage.setItem('bookings', JSON.stringify(bookings));
+
+      scheduleFormContainer.style.display = 'none';
+      confirmationMessage.style.display = 'block';
+      confirmationMessage.textContent = `Service scheduled with ${selectedTechnician.username} on ${date} at ${time}. Thank you!`;
+    });
+
+    cancelScheduleBtn.addEventListener('click', () => {
+      hideScheduleForm();
+    });
+
+    clearFiltersBtn.addEventListener('click', () => {
+      specializationFilter.value = '';
+      locationFilter.value = '';
+      filterTechnicians();
+    });
+
+    specializationFilter.addEventListener('input', filterTechnicians);
+    locationFilter.addEventListener('input', filterTechnicians);
+
+    // Add sample technicians and load list on initial load
+    addSampleTechnicians();
+    filterTechnicians();
+  </script>
 </body>
 </html>

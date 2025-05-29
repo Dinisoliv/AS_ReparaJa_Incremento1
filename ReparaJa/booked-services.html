@@ -5,19 +5,171 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Booked Services - ReparaJá</title>
   <link rel="stylesheet" href="styles.css" />
+  <style>
+    .bookings-list {
+      max-width: 800px;
+      margin: 2rem auto;
+      padding: 0;
+      list-style: none;
+    }
+    .booking-item {
+      background-color: white;
+      border: 1px solid #2a4d14;
+      border-radius: 5px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+    }
+    .booking-item button {
+      margin-top: 0.5rem;
+      background-color: #d9534f;
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      font-size: 0.9rem;
+      font-weight: 600;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    .booking-item button:hover {
+      background-color: #c9302c;
+    }
+  </style>
 </head>
 <body>
   <nav class="navbar">
-    <div class="navbar-logo">ReparaJá</div>
+    <div class="navbar-logo">
+      <img src="ReparaJaLogo.png" alt="ReparaJá Logo" style="height: 30px; vertical-align: middle; margin-right: 8px; background: transparent;" />
+      ReparaJá
+    </div>
     <ul class="navbar-links">
       <li><a href="client-dashboard.html">Dashboard</a></li>
+      <li><a href="schedule-service.html">Schedule Service</a></li>
+      <li><a href="booked-services.html">Booked Services</a></li>
+      <li><a href="service-history.html">Service History</a></li>
+      <li><a href="account-info.html">Account Info</a></li>
+      <li><a href="contact.html">Contact</a></li>
       <li><a href="login-client.html" id="logoutBtn">Logout</a></li>
     </ul>
   </nav>
   <main class="main-content">
     <h1>Booked Services</h1>
     <p>Here you can view and manage your upcoming booked services.</p>
-    <!-- List of booked services goes here -->
+    <ul id="bookingsList" class="bookings-list"></ul>
   </main>
+  <script>
+    function getBookings() {
+      const bookings = localStorage.getItem('bookings');
+      return bookings ? JSON.parse(bookings) : [];
+    }
+
+    function saveBookings(bookings) {
+      localStorage.setItem('bookings', JSON.stringify(bookings));
+    }
+
+    function getLoggedClient() {
+      return sessionStorage.getItem('loggedClient');
+    }
+
+    function renderBookings() {
+      const bookingsList = document.getElementById('bookingsList');
+      bookingsList.innerHTML = '';
+      const loggedClient = getLoggedClient();
+      if (!loggedClient) {
+        bookingsList.innerHTML = '<li>Please log in to view your bookings.</li>';
+        return;
+      }
+      const allBookings = getBookings();
+      const upcomingBookings = allBookings.filter(b => b.client === loggedClient && new Date(b.date + 'T' + b.time) >= new Date());
+      if (upcomingBookings.length === 0) {
+        bookingsList.innerHTML = '<li>No upcoming bookings found.</li>';
+        return;
+      }
+      upcomingBookings.forEach(booking => {
+        const li = document.createElement('li');
+        li.className = 'booking-item';
+        li.innerHTML = `
+          <strong>Technician:</strong> ${booking.technician}<br/>
+          <strong>Date:</strong> ${booking.date}<br/>
+          <strong>Time:</strong> ${booking.time}<br/>
+          <strong>Status:</strong> ${booking.status || 'Scheduled'}<br/>
+          <button class="cancel-btn">Cancel Booking</button>
+          <button class="chat-btn" style="margin-left: 10px;">Chat</button>
+          <div class="chat-container" style="display:none; margin-top: 10px; border: 1px solid #2a4d14; border-radius: 5px; padding: 10px; max-height: 200px; overflow-y: auto; background: #f9f9f9;">
+            <div class="chat-messages" style="max-height: 150px; overflow-y: auto; margin-bottom: 5px;"></div>
+            <input type="text" class="chat-input" placeholder="Type a message..." style="width: 80%; padding: 5px;" />
+            <button class="send-chat-btn" style="padding: 5px 10px;">Send</button>
+          </div>
+        `;
+        const cancelBtn = li.querySelector('.cancel-btn');
+        cancelBtn.addEventListener('click', () => {
+          if (confirm('Are you sure you want to cancel this booking?')) {
+            cancelBooking(booking);
+          }
+        });
+        const chatBtn = li.querySelector('.chat-btn');
+        const chatContainer = li.querySelector('.chat-container');
+        const chatMessages = li.querySelector('.chat-messages');
+        const chatInput = li.querySelector('.chat-input');
+        const sendChatBtn = li.querySelector('.send-chat-btn');
+
+        // Unique chat key for this booking
+        const chatKey = `chat_${booking.client}_${booking.technician}_${booking.date}_${booking.time}`;
+
+        // Load chat messages from localStorage
+        function loadChatMessages() {
+          chatMessages.innerHTML = '';
+          const messages = JSON.parse(localStorage.getItem(chatKey) || '[]');
+          messages.forEach(msg => {
+            const msgDiv = document.createElement('div');
+            msgDiv.textContent = `[${msg.timestamp}] ${msg.sender}: ${msg.text}`;
+            chatMessages.appendChild(msgDiv);
+          });
+          chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        // Save chat message to localStorage
+        function saveChatMessage(text, sender) {
+          const messages = JSON.parse(localStorage.getItem(chatKey) || '[]');
+          const timestamp = new Date().toLocaleString();
+          messages.push({ text, sender, timestamp });
+          localStorage.setItem(chatKey, JSON.stringify(messages));
+        }
+
+        chatBtn.addEventListener('click', () => {
+          if (chatContainer.style.display === 'none') {
+            chatContainer.style.display = 'block';
+            loadChatMessages();
+          } else {
+            chatContainer.style.display = 'none';
+          }
+        });
+
+        sendChatBtn.addEventListener('click', () => {
+          const text = chatInput.value.trim();
+          if (text === '') return;
+          const sender = 'Client';
+          saveChatMessage(text, sender);
+          loadChatMessages();
+          chatInput.value = '';
+        });
+
+        bookingsList.appendChild(li);
+      });
+    }
+
+    function cancelBooking(bookingToCancel) {
+      let bookings = getBookings();
+      bookings = bookings.filter(b => !(b.client === bookingToCancel.client && b.technician === bookingToCancel.technician && b.date === bookingToCancel.date && b.time === bookingToCancel.time));
+      saveBookings(bookings);
+      renderBookings();
+    }
+
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+      sessionStorage.removeItem('loggedClient');
+    });
+
+    renderBookings();
+  </script>
 </body>
 </html>

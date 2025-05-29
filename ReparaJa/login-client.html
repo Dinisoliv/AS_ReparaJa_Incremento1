@@ -40,7 +40,7 @@
           (u.username && u.username.toLowerCase() === defaultUsername.toLowerCase()) ||
           (u.email && u.email.toLowerCase() === defaultEmail.toLowerCase())
         );
-        if (!exists) {
+      if (!exists) {
           usersArr.push({
             username: "Client123",
             password: "123",
@@ -81,8 +81,10 @@
           return;
         }
         errorMsg.style.display = "none";
-        alert("Login successful!");
-        // Optionally, redirect to client dashboard here
+        // Store logged in username in sessionStorage
+        sessionStorage.setItem('loggedClient', user.username);
+        // Redirect to client dashboard after successful login
+        window.location.href = "client-dashboard.html";
       });
     </script>
   </main>

@@ -5,19 +5,231 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Service History - ReparaJá</title>
   <link rel="stylesheet" href="styles.css" />
+  <style>
+    .history-list {
+      max-width: 800px;
+      margin: 2rem auto;
+      padding: 0;
+      list-style: none;
+    }
+    .history-item {
+      background-color: white;
+      border: 1px solid #2a4d14;
+      border-radius: 5px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+    }
+    .history-item button {
+      margin-top: 0.5rem;
+      background-color: #5bc0de;
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      font-size: 0.9rem;
+      font-weight: 600;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      margin-right: 0.5rem;
+    }
+    .history-item button:hover {
+      background-color: #31b0d5;
+    }
+    .evaluation-form {
+      max-width: 600px;
+      margin: 2rem auto;
+      background-color: white;
+      border: 1px solid #2a4d14;
+      border-radius: 5px;
+      padding: 1rem 2rem;
+      display: none;
+    }
+    .evaluation-form label {
+      display: block;
+      margin-top: 1rem;
+      font-weight: bold;
+    }
+    .evaluation-form textarea {
+      width: 100%;
+      height: 100px;
+      margin-top: 0.5rem;
+      padding: 0.5rem;
+      font-size: 1rem;
+    }
+    .evaluation-form input[type="number"] {
+      width: 60px;
+      margin-top: 0.5rem;
+      font-size: 1rem;
+    }
+    .evaluation-form button {
+      margin-top: 1.5rem;
+      background-color: #4caf50;
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      font-size: 1rem;
+      font-weight: 600;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    .evaluation-form button:hover {
+      background-color: #388e3c;
+    }
+  </style>
 </head>
 <body>
   <nav class="navbar">
-    <div class="navbar-logo">ReparaJá</div>
+    <div class="navbar-logo">
+      <img src="ReparaJaLogo.png" alt="ReparaJá Logo" style="height: 30px; vertical-align: middle; margin-right: 8px;" />
+      ReparaJá
+    </div>
     <ul class="navbar-links">
       <li><a href="client-dashboard.html">Dashboard</a></li>
+      <li><a href="schedule-service.html">Schedule Service</a></li>
+      <li><a href="booked-services.html">Booked Services</a></li>
+      <li><a href="service-history.html">Service History</a></li>
+      <li><a href="account-info.html">Account Info</a></li>
+      <li><a href="contact.html">Contact</a></li>
       <li><a href="login-client.html" id="logoutBtn">Logout</a></li>
     </ul>
   </nav>
   <main class="main-content">
     <h1>Service History</h1>
     <p>Here you can check your past services and their details.</p>
-    <!-- Service history table/list goes here -->
+    <ul id="historyList" class="history-list"></ul>
+
+    <div id="evaluationForm" class="evaluation-form">
+      <h2>Evaluate Service and Technician</h2>
+      <form id="evalForm">
+        <label for="rating">Rating (1-5):</label>
+        <input type="number" id="rating" name="rating" min="1" max="5" required />
+        <label for="comments">Comments:</label>
+        <textarea id="comments" name="comments" placeholder="Write your feedback here..." required></textarea>
+        <button type="submit">Submit Evaluation</button>
+        <button type="button" id="cancelEvalBtn" style="margin-left: 1rem; background-color: #a3d977;">Cancel</button>
+      </form>
+    </div>
   </main>
+  <script>
+    function getServiceHistory() {
+      const history = localStorage.getItem('serviceHistory');
+      return history ? JSON.parse(history) : [];
+    }
+
+    function saveServiceHistory(history) {
+      localStorage.setItem('serviceHistory', JSON.stringify(history));
+    }
+
+    function getEvaluations() {
+      const evals = localStorage.getItem('evaluations');
+      return evals ? JSON.parse(evals) : [];
+    }
+
+    function saveEvaluations(evals) {
+      localStorage.setItem('evaluations', JSON.stringify(evals));
+    }
+
+    function getLoggedClient() {
+      return sessionStorage.getItem('loggedClient');
+    }
+
+    let pendingConfirmation = null;
+
+    function renderHistory() {
+      const historyList = document.getElementById('historyList');
+      historyList.innerHTML = '';
+      const loggedClient = getLoggedClient();
+      if (!loggedClient) {
+        historyList.innerHTML = '<li>Please log in to view your service history.</li>';
+        return;
+      }
+      const allHistory = getServiceHistory();
+      // Filter for services completed by technician but pending user confirmation
+      const pendingServices = allHistory.filter(s => s.client === loggedClient && s.status === 'completed' && !s.userConfirmed);
+      if (pendingServices.length === 0) {
+        historyList.innerHTML = '<li>No services pending confirmation.</li>';
+        return;
+      }
+      pendingServices.forEach(service => {
+        const li = document.createElement('li');
+        li.className = 'history-item';
+        li.innerHTML = `
+          <strong>Technician:</strong> ${service.technician}<br/>
+          <strong>Date:</strong> ${service.date}<br/>
+          <strong>Time:</strong> ${service.time}<br/>
+          <strong>Status:</strong> Awaiting your confirmation<br/>
+          <button class="confirmBtn">Confirm</button>
+          <button class="refuseBtn">Refuse</button>
+        `;
+        li.querySelector('.confirmBtn').addEventListener('click', () => {
+          pendingConfirmation = service;
+          showEvaluationForm();
+        });
+        li.querySelector('.refuseBtn').addEventListener('click', () => {
+          if (confirm('Are you sure you want to refuse this service? You will be redirected to support.')) {
+            window.location.href = 'contact.html';
+          }
+        });
+        historyList.appendChild(li);
+      });
+    }
+
+    function showEvaluationForm() {
+      document.getElementById('evaluationForm').style.display = 'block';
+      document.getElementById('historyList').style.display = 'none';
+    }
+
+    function hideEvaluationForm() {
+      document.getElementById('evaluationForm').style.display = 'none';
+      document.getElementById('historyList').style.display = 'block';
+      pendingConfirmation = null;
+      document.getElementById('evalForm').reset();
+    }
+
+    document.getElementById('evalForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const rating = parseInt(document.getElementById('rating').value);
+      const comments = document.getElementById('comments').value.trim();
+      if (!rating || rating < 1 || rating > 5 || comments.length === 0) {
+        alert('Please provide a valid rating and comments.');
+        return;
+      }
+      if (!pendingConfirmation) {
+        alert('No service selected for evaluation.');
+        return;
+      }
+      // Save evaluation
+      const evaluations = getEvaluations();
+      evaluations.push({
+        technician: pendingConfirmation.technician,
+        rating,
+        comments,
+        date: new Date().toISOString(),
+        client: pendingConfirmation.client
+      });
+      saveEvaluations(evaluations);
+      // Mark service as confirmed
+      const history = getServiceHistory();
+      const index = history.findIndex(s => s.client === pendingConfirmation.client && s.technician === pendingConfirmation.technician && s.date === pendingConfirmation.date && s.time === pendingConfirmation.time);
+      if (index !== -1) {
+        history[index].userConfirmed = true;
+        saveServiceHistory(history);
+      }
+      alert('Thank you for your evaluation!');
+      hideEvaluationForm();
+      renderHistory();
+    });
+
+    document.getElementById('cancelEvalBtn').addEventListener('click', () => {
+      hideEvaluationForm();
+    });
+
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+      sessionStorage.removeItem('loggedClient');
+    });
+
+    renderHistory();
+  </script>
 </body>
 </html>
