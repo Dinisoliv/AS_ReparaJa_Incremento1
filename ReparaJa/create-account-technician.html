@@ -1,52 +1,52 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>ReparaJá - Create Technician Account</title>
+  <title>ReparaJá - Criar Conta de Técnico</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <nav class="navbar">
     <div class="navbar-logo">ReparaJá</div>
     <ul class="navbar-links">
-      <li><a href="index.html">Home</a></li>
-      <li><a href="services.html">Services</a></li>
-      <li><a href="about.html">About</a></li>
-      <li><a href="contact.html">Contact</a></li>
+      <li><a href="index.html">Início</a></li>
+      <li><a href="services.html">Serviços</a></li>
+      <li><a href="about.html">Sobre</a></li>
+      <li><a href="contact.html">Contacto</a></li>
     </ul>
   </nav>
 
   <main class="main-content">
-    <h1>Create Technician Account</h1>
+    <h1>Criar Conta de Técnico</h1>
     <form action="#" method="post" class="create-account-form" onsubmit="return validateForm()" enctype="multipart/form-data">
-      <label for="username"><b>Username:</b></label><br/>
+      <label for="username"><b>Nome de Utilizador:</b></label><br/>
       <input type="text" id="username" name="username" required style="width: 300px; height: 30px; font-size: 16px; padding: 5px;" />
-      <p class="input-info" style="font-size: 12px; margin-top: 2px; margin-bottom: 10px;">Username cannot contain numbers.</p>
-      <label for="password"><b>Password:</b></label><br/>
+      <p class="input-info" style="font-size: 12px; margin-top: 2px; margin-bottom: 10px;">O nome de utilizador não pode conter números.</p>
+      <label for="password"><b>Palavra-passe:</b></label><br/>
       <input type="password" id="password" name="password" required style="width: 300px; height: 30px; font-size: 16px; padding: 5px;" /><br/>
       <label for="email"><b>Email:</b></label><br/>
       <input type="email" id="email" name="email" required style="width: 300px; height: 30px; font-size: 16px; padding: 5px;" />
-      <p class="input-info" style="font-size: 12px; margin-top: 2px; margin-bottom: 10px;">Please enter a valid email address.</p>
-      <label for="phone"><b>Phone Number:</b></label><br/>
+      <p class="input-info" style="font-size: 12px; margin-top: 2px; margin-bottom: 10px;">Por favor, insira um endereço de email válido.</p>
+      <label for="phone"><b>Número de Telefone:</b></label><br/>
       <input type="tel" id="phone" name="phone" required style="width: 300px; height: 30px; font-size: 16px; padding: 5px;" />
-      <p class="input-info" style="font-size: 12px; margin-top: 2px; margin-bottom: 10px;">Phone number must contain only numbers.</p>
-      <label for="address"><b>Address:</b></label><br/>
+      <p class="input-info" style="font-size: 12px; margin-top: 2px; margin-bottom: 10px;">O número de telefone deve conter apenas números.</p>
+      <label for="address"><b>Morada:</b></label><br/>
       <input type="text" id="address" name="address" placeholder="Ex: Rua da Alegria 123, 4000-123 Porto" required style="width: 300px; height: 30px; font-size: 16px; padding: 5px;" />
-      <p class="input-info" style="font-size: 12px; margin-top: 2px; margin-bottom: 10px;">Address must follow the Portugal format: street name, number, postal code, city.</p>
-      <label for="dob"><b>Date of Birth:</b></label><br/>
+      <p class="input-info" style="font-size: 12px; margin-top: 2px; margin-bottom: 10px;">A morada deve seguir o formato de Portugal: nome da rua, número, código postal, cidade.</p>
+      <label for="dob"><b>Data de Nascimento:</b></label><br/>
       <input type="date" id="dob" name="dob" required style="width: 300px; height: 30px; font-size: 16px; padding: 5px;" />
-      <p class="input-info" style="font-size: 12px; margin-top: 2px; margin-bottom: 10px;">You must be at least 10 years old.</p><br/>
-      <label for="experience"><b>Years of Experience:</b></label><br/>
+      <p class="input-info" style="font-size: 12px; margin-top: 2px; margin-bottom: 10px;">Deve ter pelo menos 10 anos.</p><br/>
+      <label for="experience"><b>Anos de Experiência:</b></label><br/>
       <input type="number" id="experience" name="experience" min="0" required style="width: 300px; height: 30px; font-size: 16px; padding: 5px;" />
-      <p class="input-info" style="font-size: 12px; margin-top: 2px; margin-bottom: 10px;">Years of experience must be zero or more.</p>
-      <label for="specialization"><b>Specialization Area:</b></label><br/>
+      <p class="input-info" style="font-size: 12px; margin-top: 2px; margin-bottom: 10px;">Os anos de experiência devem ser zero ou mais.</p>
+      <label for="specialization"><b>Área de Especialização:</b></label><br/>
       <input type="text" id="specialization" name="specialization" required style="width: 300px; height: 30px; font-size: 16px; padding: 5px;" />
-      <p class="input-info" style="font-size: 12px; margin-top: 2px; margin-bottom: 10px;">Please specify your area of specialization.</p>
-      <label for="capabilities"><b>Validation Document:</b></label><br/>
+      <p class="input-info" style="font-size: 12px; margin-top: 2px; margin-bottom: 10px;">Por favor, especifique a sua área de especialização.</p>
+      <label for="capabilities"><b>Documento de Validação:</b></label><br/>
       <input type="file" id="capabilities" name="capabilities" accept=".pdf,.doc,.docx,.jpg,.png" required style="width: 300px; font-size: 16px; padding: 5px;" />
-      <p class="input-info" style="font-size: 12px; margin-top: 2px; margin-bottom: 10px;">Upload a document validating your capabilities.</p>
-      <button type="submit" class="btn btn-client">Create Account</button>
+      <p class="input-info" style="font-size: 12px; margin-top: 2px; margin-bottom: 10px;">Carregue um documento que valide as suas capacidades.</p>
+      <button type="submit" class="btn btn-client">Criar Conta</button>
     </form>
     <script>
       function getTechnicians() {
@@ -73,33 +73,33 @@
 
         // Username validation: no numbers allowed
         if (/\d/.test(username)) {
-          alert('Username cannot contain numbers.');
+          alert('O nome de utilizador não pode conter números.');
           return false;
         }
 
         // Username uniqueness check
         const techs = getTechnicians();
         if (techs.some(t => t.username.toLowerCase() === username.toLowerCase())) {
-          alert('This username is already taken. Please choose another.');
+          alert('Este nome de utilizador já está a ser usado. Por favor escolha outro.');
           return false;
         }
 
         // Phone validation: only digits allowed
         if (!/^\d+$/.test(phone)) {
-          alert('Phone number must contain only numbers.');
+          alert('O número de telefone deve conter apenas números.');
           return false;
         }
 
         // Address validation: Portugal format check (street name, number, postal code, city)
         const portugalAddressRegex = /^[a-zA-Z\s]+ \d+,\s\d{4}-\d{3} [a-zA-Z\s]+$/;
         if (!portugalAddressRegex.test(address)) {
-          alert('Address must follow the Portugal format: street name, number, postal code, city.');
+          alert('A morada deve seguir o formato de Portugal: nome da rua, número, código postal, cidade.');
           return false;
         }
 
         // Date of birth validation: user must be older than 10 years
         if (!dob) {
-          alert('Please enter your date of birth.');
+          alert('Por favor, insira a sua data de nascimento.');
           return false;
         }
         const dobDate = new Date(dob);
@@ -110,31 +110,31 @@
           age--;
         }
         if (age < 10) {
-          alert('You must be at least 10 years old.');
+          alert('Deve ter pelo menos 10 anos.');
           return false;
         }
 
         // Experience validation: must be >= 0
         if (experience === '' || isNaN(experience) || Number(experience) < 0) {
-          alert('Years of experience must be zero or more.');
+          alert('Os anos de experiência devem ser zero ou mais.');
           return false;
         }
 
         // Specialization validation: not empty
         if (specialization.length === 0) {
-          alert('Please specify your area of specialization.');
+          alert('Por favor, especifique a sua área de especialização.');
           return false;
         }
 
         // Capabilities file validation: not empty
         if (capabilities.length === 0) {
-          alert('Please upload a document validating your capabilities.');
+          alert('Por favor, carregue um documento que valide as suas capacidades.');
           return false;
         }
 
         // Save technician to localStorage
         saveTechnician({ username, password, email, phone, address, dob, experience, specialization });
-        alert('Account created successfully! You can now log in.');
+        alert('Conta criada com sucesso! Já pode iniciar sessão.');
         // Optionally, redirect to login page here
         return false; // Prevent form submission for demo
       }
@@ -142,3 +142,4 @@
   </main>
 </body>
 </html>
+
