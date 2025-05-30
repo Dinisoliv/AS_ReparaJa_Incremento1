@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Assigned Jobs - Technician</title>
+  <title>Trabalhos Atribuídos - Técnico</title>
   <link rel="stylesheet" href="styles.css" />
   <style>
     .job-list {
@@ -54,42 +54,42 @@
 <body>
   <nav class="navbar">
     <div class="navbar-logo">
-      <img src="ReparaJaLogo.png" alt="ReparaJá Logo" style="height: 30px; vertical-align: middle; margin-right: 8px; background: transparent;" />
+      <img src="ReparaJaLogo.png" alt="Logótipo ReparaJá" style="height: 30px; vertical-align: middle; margin-right: 8px; background: transparent;" />
       ReparaJá
     </div>
     <ul class="navbar-links">
-      <li><a href="technician-dashboard.html">Dashboard</a></li>
-      <li><a href="assigned-jobs.html" class="active">Assigned Jobs</a></li>
-      <li><a href="update-availability.html">Update Availability</a></li>
-      <li><a href="service-history.html">Service History</a></li>
-      <li><a href="account-info.html">Account Info</a></li>
-      <li><a href="login-technician.html" id="logoutBtn">Logout</a></li>
+      <li><a href="technician-dashboard.html">Painel</a></li>
+      <li><a href="assigned-jobs.html" class="active">Trabalhos Atribuídos</a></li>
+      <li><a href="update-availability.html">Atualizar Disponibilidade</a></li>
+      <li><a href="service-history.html">Histórico de Serviços</a></li>
+      <li><a href="account-info.html">Informações da Conta</a></li>
+      <li><a href="login-technician.html" id="logoutBtn">Terminar Sessão</a></li>
     </ul>
   </nav>
 
   <main class="main-content">
-    <h1>Assigned Jobs</h1>
-  <ul id="jobList" class="job-list">
-      <!-- Jobs will be dynamically inserted here -->
+    <h1>Trabalhos Atribuídos</h1>
+    <ul id="jobList" class="job-list">
+      <!-- Os trabalhos serão inseridos dinamicamente aqui -->
     </ul>
 
     <div class="chat-container" style="display:none;">
-      <h2>Chat with Client: <span id="chatClientName"></span></h2>
+      <h2>Chat com Cliente: <span id="chatClientName"></span></h2>
       <div id="chatMessages" class="chat-messages"></div>
-      <input type="text" id="chatInput" class="chat-input" placeholder="Type a message..." />
-      <button id="sendChatBtn">Send</button>
+      <input type="text" id="chatInput" class="chat-input" placeholder="Escreve uma mensagem..." />
+      <button id="sendChatBtn">Enviar</button>
     </div>
   </main>
 
   <script>
-    // Load assigned jobs from localStorage bookings filtered for logged-in technician
+    // Carregar trabalhos atribuídos a partir do localStorage filtrados pelo técnico com sessão iniciada
     function getAssignedJobs() {
       const loggedTechnician = sessionStorage.getItem('loggedTechnician');
       if (!loggedTechnician) return Promise.resolve([]);
       return fetch('http://localhost:3001/bookings/filter?technician=' + encodeURIComponent(loggedTechnician))
         .then(response => {
           if (!response.ok) {
-            throw new Error('Failed to fetch assigned jobs');
+            throw new Error('Falha ao obter trabalhos atribuídos');
           }
           return response.json();
         });
@@ -112,35 +112,35 @@
             const li = document.createElement('li');
             li.className = 'job-item';
             li.innerHTML = `
-              <strong>Client:</strong> ${job.client}<br/>
-              <strong>Address:</strong> ${job.address || 'N/A'}<br/>
-              <strong>Date:</strong> ${job.date || 'N/A'}<br/>
-              <strong>Time:</strong> ${job.time || 'N/A'}<br/>
-              <strong>Job Type:</strong> ${job.category || 'General'}<br/>
-              <strong>Description:</strong> ${job.description}<br/>
-              <button class="cancel-btn" data-id="${job.id}">Cancel Job</button>
-              <button class="mark-completed-btn" data-id="${job.id}">Mark as Completed</button>
+              <strong>Cliente:</strong> ${job.client}<br/>
+              <strong>Morada:</strong> ${job.address || 'N/D'}<br/>
+              <strong>Data:</strong> ${job.date || 'N/D'}<br/>
+              <strong>Hora:</strong> ${job.time || 'N/D'}<br/>
+              <strong>Tipo de Trabalho:</strong> ${job.category || 'Geral'}<br/>
+              <strong>Descrição:</strong> ${job.description}<br/>
+              <button class="cancel-btn" data-id="${job.id}">Cancelar Trabalho</button>
+              <button class="mark-completed-btn" data-id="${job.id}">Marcar como Concluído</button>
               <button class="chat-btn" data-id="${job.id}">Chat</button>
-              <textarea class="justify-input" placeholder="Enter cancellation justification" data-id="${job.id}"></textarea>
+              <textarea class="justify-input" placeholder="Insere justificação para o cancelamento" data-id="${job.id}"></textarea>
             `;
             jobList.appendChild(li);
           });
 
-          // Add event listeners for cancel buttons
+          // Eventos para os botões de cancelar
           document.querySelectorAll('.cancel-btn').forEach(button => {
             button.addEventListener('click', () => {
               const jobId = parseInt(button.getAttribute('data-id'));
               const justificationInput = document.querySelector(`.justify-input[data-id="${jobId}"]`);
               const justification = justificationInput.value.trim();
               if (!justification) {
-                alert('Please enter a justification for cancellation.');
+                alert('Por favor, insere uma justificação para o cancelamento.');
                 return;
               }
               cancelJob(jobId, justification);
             });
           });
 
-          // Add event listeners for chat buttons
+          // Eventos para os botões de chat
           document.querySelectorAll('.chat-btn').forEach(button => {
             button.addEventListener('click', () => {
               const jobId = parseInt(button.getAttribute('data-id'));
@@ -149,9 +149,10 @@
           });
         })
         .catch(error => {
-          alert('Error loading assigned jobs: ' + error.message);
+          alert('Erro ao carregar trabalhos atribuídos: ' + error.message);
         });
     }
+
     function openChat(jobId) {
       getAssignedJobs()
         .then(assignedJobs => {
@@ -163,21 +164,7 @@
           renderChatMessages(job.chat);
         })
         .catch(error => {
-          alert('Error opening chat: ' + error.message);
-        });
-    }
-    function openChat(jobId) {
-      getAssignedJobs()
-        .then(assignedJobs => {
-          const job = assignedJobs.find(j => j.id === jobId);
-          if (!job) return;
-          currentChatJobId = jobId;
-          chatClientName.textContent = job.client;
-          chatContainer.style.display = 'block';
-          renderChatMessages(job.chat);
-        })
-        .catch(error => {
-          alert('Error opening chat: ' + error.message);
+          alert('Erro ao abrir o chat: ' + error.message);
         });
     }
 
@@ -187,30 +174,15 @@
       })
       .then(response => {
         if (!response.ok) {
-          throw new Error('Failed to cancel job');
+          throw new Error('Falha ao cancelar trabalho');
         }
-        alert('Job cancelled and justification sent to client.');
+        alert('Trabalho cancelado e justificação enviada ao cliente.');
         renderJobs();
         closeChatIfOpen(jobId);
       })
       .catch(error => {
         alert(error.message);
       });
-    }
-
-    function openChat(jobId) {
-      getAssignedJobs()
-        .then(assignedJobs => {
-          const job = assignedJobs.find(j => j.id === jobId);
-          if (!job) return;
-          currentChatJobId = jobId;
-          chatClientName.textContent = job.client;
-          chatContainer.style.display = 'block';
-          renderChatMessages(job.chat);
-        })
-        .catch(error => {
-          alert('Error opening chat: ' + error.message);
-        });
     }
 
     function closeChatIfOpen(jobId) {
@@ -234,19 +206,20 @@
     sendChatBtn.addEventListener('click', () => {
       const message = chatInput.value.trim();
       if (message && currentChatJobId !== null) {
-        // TODO: Implement chat message sending via backend
-        alert('Chat message sending is not yet implemented.');
+        // TODO: Implementar envio de mensagens via backend
+        alert('Envio de mensagens ainda não implementado.');
         chatInput.value = '';
       }
     });
 
-    // Initial render
+    // Render inicial
     renderJobs();
 
-    // Logout button functionality
+    // Terminar sessão
     document.getElementById('logoutBtn').addEventListener('click', function() {
       sessionStorage.removeItem('loggedTechnician');
     });
   </script>
 </body>
 </html>
+
