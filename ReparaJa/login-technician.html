@@ -1,33 +1,33 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>ReparaJá - Technician Login</title>
+  <title>ReparaJá - Início de Sessão Técnico</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <nav class="navbar">
     <div class="navbar-logo">ReparaJá</div>
     <ul class="navbar-links">
-      <li><a href="index.html">Home</a></li>
-      <li><a href="services.html">Services</a></li>
-      <li><a href="about.html">About</a></li>
-      <li><a href="contact.html">Contact</a></li>
+      <li><a href="index.html">Início</a></li>
+      <li><a href="services.html">Serviços</a></li>
+      <li><a href="about.html">Sobre</a></li>
+      <li><a href="contact.html">Contacto</a></li>
     </ul>
   </nav>
 
   <main class="main-content">
-    <h1>Technician Login</h1>
+    <h1>Início de Sessão Técnico</h1>
     <form action="#" method="post" class="login-form" id="loginForm">
-      <label for="username">Username or Email:</label><br/>
+      <label for="username">Nome de utilizador ou Email:</label><br/>
       <input type="text" id="username" name="username" required /><br/>
-      <label for="password">Password:</label><br/>
+      <label for="password">Palavra-passe:</label><br/>
       <input type="password" id="password" name="password" required /><br/>
-      <button type="submit" class="btn btn-technician">Login</button>
+      <button type="submit" class="btn btn-technician">Entrar</button>
       <p id="login-error" style="color: red; margin-top: 10px; display: none;"></p>
     </form>
-    <p>Don't have an account? <a href="create-account-technician.html" class="btn btn-technician">Create an Account</a></p>
+    <p>Não tem uma conta? <a href="create-account-technician.html" class="btn btn-technician">Criar Conta</a></p>
     <script>
       // Ensure default technician exists in localStorage
       function ensureDefaultTechnician() {
@@ -73,33 +73,21 @@
         );
         const errorMsg = document.getElementById('login-error');
         if (!tech) {
-          errorMsg.textContent = "Technician not found. Please check your username/email.";
+          errorMsg.textContent = "Técnico não encontrado. Por favor verifique o nome de utilizador/email.";
           errorMsg.style.display = "block";
           return;
         }
         if (tech.password !== password) {
-          errorMsg.textContent = "Incorrect password. Please try again.";
+          errorMsg.textContent = "Palavra-passe incorreta. Por favor tente novamente.";
           errorMsg.style.display = "block";
           return;
         }
         errorMsg.style.display = "none";
 
-        alert("Technician login successful!");
+        alert("Início de sessão do técnico efetuado com sucesso!");
         sessionStorage.setItem('loggedTechnician', usernameOrEmail);
 
         // Store detailed technician info in sessionStorage for account-info page
         const technicianInfo = {
-          name: tech.username || usernameOrEmail,
-          email: tech.email || '',
-          phone: tech.phone || '',
-          address: tech.address || ''
-        };
-        sessionStorage.setItem('loggedTechnicianInfo', JSON.stringify(technicianInfo));
-
-        window.location.href = "technician-dashboard.html";
-      });
-    </script>
-  </main>
-</body>
-</html>
+          name: tech.username
 
