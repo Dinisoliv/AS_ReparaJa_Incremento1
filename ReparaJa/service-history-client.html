@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Service History - Client</title>
+  <title>Histórico de Serviços - Cliente</title>
   <link rel="stylesheet" href="styles.css" />
   <style>
     .service-list {
@@ -23,23 +23,23 @@
 <body>
   <nav class="navbar">
     <div class="navbar-logo">
-      <img src="ReparaJaLogo.png" alt="ReparaJá Logo" style="height: 30px; vertical-align: middle; margin-right: 8px; background: transparent;" />
+      <img src="ReparaJaLogo.png" alt="Logótipo ReparaJá" style="height: 30px; vertical-align: middle; margin-right: 8px; background: transparent;" />
       ReparaJá
     </div>
     <ul class="navbar-links">
       <li><a href="client-dashboard.html">Dashboard</a></li>
-      <li><a href="schedule-service.html">Schedule Service</a></li>
-      <li><a href="booked-services.html">Booked Services</a></li>
-      <li><a href="service-history-client.html" class="active">Service History</a></li>
-      <li><a href="account-info-client.html">Account Info</a></li>
-      <li><a href="login-client.html" id="logoutBtn">Logout</a></li>
+      <li><a href="schedule-service.html">Agendar Serviço</a></li>
+      <li><a href="booked-services.html">Serviços Agendados</a></li>
+      <li><a href="service-history-client.html" class="active">Histórico de Serviços</a></li>
+      <li><a href="account-info-client.html">Dados da Conta</a></li>
+      <li><a href="login-client.html" id="logoutBtn">Sair</a></li>
     </ul>
   </nav>
 
   <main class="main-content">
-    <h1>Your Service History</h1>
+    <h1>O Seu Histórico de Serviços</h1>
     <ul id="serviceList" class="service-list">
-      <!-- Client's completed services will be listed here -->
+      <!-- Os serviços concluídos pelo cliente serão listados aqui -->
     </ul>
   </main>
 
@@ -47,14 +47,14 @@
     <div id="modal" style="background:white; padding:20px; border-radius:8px; max-width:400px; width:90%; box-shadow:0 2px 10px rgba(0,0,0,0.3);">
       <div id="modalContent"></div>
       <div style="margin-top:15px; text-align:right;">
-        <button id="modalCancelBtn" style="margin-right:10px; padding:5px 10px;">Cancel</button>
+        <button id="modalCancelBtn" style="margin-right:10px; padding:5px 10px;">Cancelar</button>
         <button id="modalOkBtn" style="padding:5px 10px;">OK</button>
       </div>
     </div>
   </div>
 
   <script>
-    // Load completed services from localStorage filtered by logged-in client
+    // Carrega serviços concluídos do localStorage filtrados pelo cliente autenticado
     const serviceList = document.getElementById('serviceList');
     const modalOverlay = document.getElementById('modalOverlay');
     const modalContent = document.getElementById('modalContent');
@@ -81,7 +81,7 @@
     });
 
     function getCompletedServices() {
-      const loggedClient = sessionStorage.getItem('loggedClient') || 'exampleClient';
+      const loggedClient = sessionStorage.getItem('loggedClient') || 'clienteExemplo';
       const services = localStorage.getItem('completedServices');
       if (services) {
         const parsedServices = JSON.parse(services);
@@ -101,8 +101,8 @@
           id: 1,
           client: client,
           technician: 'John Doe',
-          description: 'Repaired smartphone screen',
-          category: 'Electronics',
+          description: 'Reparo de ecrã de smartphone',
+          category: 'Eletrónica',
           date: '2023-05-10',
           evaluation: 4,
           completed: true
@@ -111,8 +111,8 @@
           id: 2,
           client: client,
           technician: 'Jane Smith',
-          description: 'Fixed laptop charging port',
-          category: 'Computers',
+          description: 'Reparou porta de carregamento do portátil',
+          category: 'Computadores',
           date: '2023-04-22',
           evaluation: null,
           completed: false
@@ -121,8 +121,8 @@
           id: 3,
           client: client,
           technician: 'Mike Brown',
-          description: 'Replaced washing machine motor',
-          category: 'Appliances',
+          description: 'Substituição do motor da máquina de lavar',
+          category: 'Eletrodomésticos',
           date: '2023-03-15',
           evaluation: null,
           completed: true
@@ -131,8 +131,8 @@
           id: 4,
           client: client,
           technician: 'Anna White',
-          description: 'Fixed refrigerator cooling issue',
-          category: 'Appliances',
+          description: 'Reparou problema de refrigeração do frigorífico',
+          category: 'Eletrodomésticos',
           date: '2023-02-28',
           evaluation: 5,
           completed: true
@@ -143,12 +143,12 @@
     }
 
     function getLoggedClient() {
-      return sessionStorage.getItem('loggedClient') || 'exampleClient';
+      return sessionStorage.getItem('loggedClient') || 'clienteExemplo';
     }
 
     async function promptRating(serviceId) {
       const contentHtml = `
-        <p>Please enter your rating (1-5):</p>
+        <p>Por favor, introduza a sua classificação (1-5):</p>
         <input type="number" id="ratingInput" min="1" max="5" style="width: 100%; padding: 5px; font-size: 1rem;" />
       `;
       const confirmed = await showModal(contentHtml);
@@ -158,7 +158,7 @@
         if (!isNaN(rating) && rating >= 1 && rating <= 5) {
           saveEvaluation(serviceId, rating);
         } else {
-          alert('Invalid rating. Please enter a number between 1 and 5.');
+          alert('Classificação inválida. Por favor, introduza um número entre 1 e 5.');
         }
       }
     }
@@ -172,31 +172,31 @@
       serviceList.innerHTML = '';
       const loggedClient = getLoggedClient();
       if (!loggedClient) {
-        serviceList.innerHTML = '<li>Please log in to view your service history.</li>';
+        serviceList.innerHTML = '<li>Por favor, inicie sessão para ver o histórico de serviços.</li>';
         return;
       }
       const completedServices = getCompletedServices().filter(s => s.client === loggedClient);
       if (completedServices.length === 0) {
-        serviceList.innerHTML = '<li>No completed services found.</li>';
+        serviceList.innerHTML = '<li>Não foram encontrados serviços concluídos.</li>';
         return;
       }
       completedServices.forEach(service => {
         const li = document.createElement('li');
         li.className = 'service-item';
         li.innerHTML = `
-          <strong>Technician:</strong> ${service.technician}<br/>
-          <strong>Description:</strong> ${service.description}<br/>
-          <strong>Category:</strong> ${service.category || 'General'}<br/>
-          <strong>Date:</strong> ${service.date}<br/>
-          <strong>Evaluation:</strong> ${service.evaluation ? service.evaluation + ' / 5' : 'Not evaluated yet'}<br/>
-          ${!service.evaluation ? `<button class="evaluate-btn" data-id="${service.id}">Evaluate</button>` : ''}
-          ${!service.evaluation ? `<button class="reject-btn" data-id="${service.id}">Reject</button>` : ''}
-          ${!service.completed ? `<button class="confirm-btn" data-id="${service.id}">Confirm Completion</button>` : ''}
+          <strong>Técnico:</strong> ${service.technician}<br/>
+          <strong>Descrição:</strong> ${service.description}<br/>
+          <strong>Categoria:</strong> ${service.category || 'Geral'}<br/>
+          <strong>Data:</strong> ${service.date}<br/>
+          <strong>Avaliação:</strong> ${service.evaluation ? service.evaluation + ' / 5' : 'Ainda não avaliado'}<br/>
+          ${!service.evaluation ? `<button class="evaluate-btn" data-id="${service.id}">Avaliar</button>` : ''}
+          ${!service.evaluation ? `<button class="reject-btn" data-id="${service.id}">Rejeitar</button>` : ''}
+          ${!service.completed ? `<button class="confirm-btn" data-id="${service.id}">Confirmar Conclusão</button>` : ''}
         `;
         serviceList.appendChild(li);
       });
 
-      // Add event listeners for evaluation buttons
+      // Eventos de clique para os botões
       document.querySelectorAll('.evaluate-btn').forEach(button => {
         button.addEventListener('click', () => {
           const serviceId = button.getAttribute('data-id');
@@ -204,22 +204,20 @@
         });
       });
 
-      // Add event listeners for reject buttons
       document.querySelectorAll('.reject-btn').forEach(button => {
         button.addEventListener('click', async () => {
           const serviceId = button.getAttribute('data-id');
-          const confirmed = await confirmAction('Are you sure you want to reject this completed service? You will be redirected to contact support.');
+          const confirmed = await confirmAction('Tem a certeza de que pretende rejeitar este serviço concluído? Será redirecionado para o suporte.');
           if (confirmed) {
             rejectService(serviceId);
           }
         });
       });
 
-      // Add event listeners for confirm completion buttons
       document.querySelectorAll('.confirm-btn').forEach(button => {
         button.addEventListener('click', async () => {
           const serviceId = button.getAttribute('data-id');
-          const confirmed = await confirmAction('Do you confirm the completion of this service?');
+          const confirmed = await confirmAction('Confirma a conclusão deste serviço?');
           if (confirmed) {
             markServiceCompleted(serviceId);
           }
@@ -234,7 +232,7 @@
         services[index].completed = true;
         localStorage.setItem('completedServices', JSON.stringify(services));
         renderServices();
-        confirmAction('Would you like to evaluate the service now?').then(confirmed => {
+        confirmAction('Deseja avaliar o serviço agora?').then(confirmed => {
           if (confirmed) {
             promptRating(serviceId);
           }
@@ -254,15 +252,16 @@
 
     renderServices();
 
-    // Logout button functionality
+    // Funcionalidade do botão sair
     document.getElementById('logoutBtn').addEventListener('click', function() {
       sessionStorage.removeItem('loggedClient');
     });
 
     function rejectService(serviceId) {
-      // Redirect to contact support page
+      // Redireciona para a página de suporte
       window.location.href = 'contact-public.html';
     }
   </script>
 </body>
 </html>
+
