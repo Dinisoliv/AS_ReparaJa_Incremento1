@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Service History - Technician</title>
+  <title>Histórico de Serviços - Técnico</title>
   <link rel="stylesheet" href="styles.css" />
   <style>
     .service-list {
@@ -27,28 +27,28 @@
 <body>
   <nav class="navbar">
     <div class="navbar-logo">
-      <img src="ReparaJaLogo.png" alt="ReparaJá Logo" style="height: 30px; vertical-align: middle; margin-right: 8px; background: transparent;" />
+      <img src="ReparaJaLogo.png" alt="Logótipo ReparaJá" style="height: 30px; vertical-align: middle; margin-right: 8px; background: transparent;" />
       ReparaJá
     </div>
     <ul class="navbar-links">
-      <li><a href="technician-dashboard.html">Dashboard</a></li>
-      <li><a href="assigned-jobs.html">Assigned Jobs</a></li>
-      <li><a href="update-availability.html">Update Availability</a></li>
-      <li><a href="service-history.html" class="active">Service History</a></li>
-      <li><a href="account-info.html">Account Info</a></li>
-      <li><a href="login-technician.html" id="logoutBtn">Logout</a></li>
+      <li><a href="technician-dashboard.html">Painel</a></li>
+      <li><a href="assigned-jobs.html">Trabalhos Atribuídos</a></li>
+      <li><a href="update-availability.html">Atualizar Disponibilidade</a></li>
+      <li><a href="service-history.html" class="active">Histórico de Serviços</a></li>
+      <li><a href="account-info.html">Dados da Conta</a></li>
+      <li><a href="login-technician.html" id="logoutBtn">Sair</a></li>
     </ul>
   </nav>
 
   <main class="main-content">
-    <h1>Service History</h1>
+    <h1>Histórico de Serviços</h1>
     <ul id="serviceList" class="service-list">
-      <!-- Completed services will be listed here -->
+      <!-- Os serviços concluídos serão listados aqui -->
     </ul>
   </main>
 
   <script>
-    // Load completed services from localStorage filtered by logged-in technician
+    // Carrega serviços concluídos do localStorage filtrados pelo técnico autenticado
     const serviceList = document.getElementById('serviceList');
 
     function getCompletedServices() {
@@ -64,23 +64,23 @@
       serviceList.innerHTML = '';
       const loggedTechnician = getLoggedTechnician();
       if (!loggedTechnician) {
-        serviceList.innerHTML = '<li>Please log in to view your service history.</li>';
+        serviceList.innerHTML = '<li>Por favor, inicie sessão para ver o histórico de serviços.</li>';
         return;
       }
       const completedServices = getCompletedServices().filter(s => s.technician === loggedTechnician);
       if (completedServices.length === 0) {
-        serviceList.innerHTML = '<li>No completed services found.</li>';
+        serviceList.innerHTML = '<li>Não foram encontrados serviços concluídos.</li>';
         return;
       }
       completedServices.forEach(service => {
         const li = document.createElement('li');
         li.className = 'service-item';
         li.innerHTML = `
-          <strong>Client:</strong> ${service.client}<br/>
-          <strong>Description:</strong> ${service.description}<br/>
-          <strong>Category:</strong> ${service.category || 'General'}<br/>
-          <strong>Date:</strong> ${service.date}<br/>
-          <strong>Evaluation:</strong> ${service.evaluation ? service.evaluation + ' / 5' : 'Not evaluated yet'}<br/>
+          <strong>Cliente:</strong> ${service.client}<br/>
+          <strong>Descrição:</strong> ${service.description}<br/>
+          <strong>Categoria:</strong> ${service.category || 'Geral'}<br/>
+          <strong>Data:</strong> ${service.date}<br/>
+          <strong>Avaliação:</strong> ${service.evaluation ? service.evaluation + ' / 5' : 'Ainda não avaliado'}<br/>
         `;
         serviceList.appendChild(li);
       });
@@ -88,7 +88,7 @@
 
     renderServices();
 
-    // Logout button functionality
+    // Funcionalidade do botão sair
     document.getElementById('logoutBtn').addEventListener('click', function() {
       sessionStorage.removeItem('loggedTechnician');
     });
