@@ -1,66 +1,65 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>ReparaJá - Client Dashboard</title>
+  <title>ReparaJá - Painel do Cliente</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <nav class="navbar">
     <div class="navbar-logo">
-      <img src="ReparaJaLogo.png" alt="ReparaJá Logo" style="height: 30px; vertical-align: middle; margin-right: 8px; background: transparent;" />
+      <img src="ReparaJaLogo.png" alt="Logótipo ReparaJá" style="height: 30px; vertical-align: middle; margin-right: 8px; background: transparent;" />
       ReparaJá
     </div>
     <ul class="navbar-links">
-      <li><a href="client-dashboard.html">Dashboard</a></li>
-      <li><a href="schedule-service.html">Schedule Service</a></li>
-      <li><a href="booked-services.html">Booked Services</a></li>
-      <li><a href="service-history-client.html">Service History</a></li>
-      <li><a href="account-info-client.html">Account Info</a></li>
-      <li><a href="contact.html">Contact</a></li>
-      <li><a href="login-client.html" id="logoutBtn">Logout</a></li>
+      <li><a href="client-dashboard.html">Painel</a></li>
+      <li><a href="schedule-service.html">Agendar Serviço</a></li>
+      <li><a href="booked-services.html">Serviços Agendados</a></li>
+      <li><a href="service-history-client.html">Histórico de Serviços</a></li>
+      <li><a href="account-info-client.html">Informações da Conta</a></li>
+      <li><a href="contact.html">Contacto</a></li>
+      <li><a href="login-client.html" id="logoutBtn">Terminar Sessão</a></li>
     </ul>
   </nav>
 
   <main class="main-content">
-    <h1>Welcome, <span id="clientName"></span>!</h1>
+    <h1>Bem-vindo(a), <span id="clientName"></span>!</h1>
     <div class="dashboard-options">
       <div class="dashboard-card">
-        <h2>Schedule a Service</h2>
-        <p>Book a new repair or maintenance service with our technicians.</p>
-        <a href="schedule-service.html" class="btn btn-client">Schedule</a>
+        <h2>Agendar Serviço</h2>
+        <p>Marque um novo serviço de reparação ou manutenção com os nossos técnicos.</p>
+        <a href="schedule-service.html" class="btn btn-client">Agendar</a>
       </div>
       <div class="dashboard-card">
-        <h2>Booked Services</h2>
-        <p>View and manage your upcoming booked services.</p>
-        <a href="booked-services.html" class="btn btn-client">View Bookings</a>
+        <h2>Serviços Agendados</h2>
+        <p>Consulte e gere os seus serviços agendados.</p>
+        <a href="booked-services.html" class="btn btn-client">Ver Agendamentos</a>
       </div>
       <div class="dashboard-card">
-        <h2>Service History</h2>
-        <p>Check your past services and their details.</p>
-        <a href="service-history.html" class="btn btn-client">History</a>
+        <h2>Histórico de Serviços</h2>
+        <p>Consulte os seus serviços anteriores e os respetivos detalhes.</p>
+        <a href="service-history.html" class="btn btn-client">Histórico</a>
       </div>
       <div class="dashboard-card">
-        <h2>Account Information</h2>
-        <p>View and update your personal account details.</p>
-        <a href="account-info-client.html" class="btn btn-client">Account Info</a>
+        <h2>Informações da Conta</h2>
+        <p>Consulte e atualize os dados da sua conta pessoal.</p>
+        <a href="account-info-client.html" class="btn btn-client">Conta</a>
       </div>
       <div class="dashboard-card">
-        <h2>Support</h2>
-        <p>Need help? Contact our support team.</p>
-        <a href="contact.html" class="btn btn-client">Contact Support</a>
+        <h2>Apoio</h2>
+        <p>Precisa de ajuda? Contacte a nossa equipa de apoio.</p>
+        <a href="contact.html" class="btn btn-client">Contactar Apoio</a>
       </div>
     </div>
   </main>
   <script>
     document.addEventListener('DOMContentLoaded', function() {
-      // Example: Display logged-in client name from localStorage/sessionStorage
-      // (You should set this value after login)
+      // Exemplo: Mostrar o nome do cliente com sessão iniciada a partir do sessionStorage
       const loggedClient = sessionStorage.getItem('loggedClient');
       document.getElementById('clientName').textContent = loggedClient ? loggedClient : '';
 
-      // Optionally, handle logout
+      // Opcionalmente, gerir o logout
       document.getElementById('logoutBtn').addEventListener('click', function() {
         sessionStorage.removeItem('loggedClient');
       });
