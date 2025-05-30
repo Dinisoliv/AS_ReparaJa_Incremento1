@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Schedule a Service - ReparaJá</title>
+  <title>Agendar Serviço - ReparaJá</title>
   <link rel="stylesheet" href="styles.css" />
   <style>
     .filter-container {
@@ -92,48 +92,48 @@
 <body>
   <nav class="navbar">
     <div class="navbar-logo">
-      <img src="ReparaJaLogo.png" alt="ReparaJá Logo" style="height: 30px; vertical-align: middle; margin-right: 8px;" />
+      <img src="ReparaJaLogo.png" alt="Logótipo ReparaJá" style="height: 30px; vertical-align: middle; margin-right: 8px;" />
       ReparaJá
     </div>
     <ul class="navbar-links">
       <li><a href="client-dashboard.html">Dashboard</a></li>
-      <li><a href="schedule-service.html">Schedule Service</a></li>
-      <li><a href="booked-services.html">Booked Services</a></li>
-      <li><a href="service-history.html">Service History</a></li>
-      <li><a href="account-info-client.html">Account Info</a></li>
-      <li><a href="contact.html">Contact</a></li>
-      <li><a href="login-client.html" id="logoutBtn">Logout</a></li>
+      <li><a href="schedule-service.html">Agendar Serviço</a></li>
+      <li><a href="booked-services.html">Serviços Agendados</a></li>
+      <li><a href="service-history.html">Histórico de Serviços</a></li>
+      <li><a href="account-info-client.html">Dados da Conta</a></li>
+      <li><a href="contact.html">Contacto</a></li>
+      <li><a href="login-client.html" id="logoutBtn">Sair</a></li>
     </ul>
   </nav>
   <main class="main-content">
-    <h1>Schedule a Service</h1>
-    <p>Here you can book a new repair or maintenance service.</p>
+    <h1>Agendar Serviço</h1>
+    <p>Aqui pode reservar um novo serviço de reparação ou manutenção.</p>
 
     <div class="filter-container">
       <div>
-        <label for="specializationFilter">Filter by Specialization:</label>
-        <input type="text" id="specializationFilter" placeholder="e.g. Refrigerators" />
+        <label for="specializationFilter">Filtrar por Especialização:</label>
+        <input type="text" id="specializationFilter" placeholder="ex. Frigoríficos" />
       </div>
       <div>
-        <label for="locationFilter">Filter by Location:</label>
-        <input type="text" id="locationFilter" placeholder="e.g. Porto" />
+        <label for="locationFilter">Filtrar por Localização:</label>
+        <input type="text" id="locationFilter" placeholder="ex. Porto" />
       </div>
       <div>
-        <button id="clearFiltersBtn" class="btn btn-client" style="margin-top: 1.8rem;">Clear Filters</button>
+        <button id="clearFiltersBtn" class="btn btn-client" style="margin-top: 1.8rem;">Limpar Filtros</button>
       </div>
     </div>
 
     <ul id="technicianList" class="technician-list"></ul>
 
     <div id="scheduleFormContainer" class="schedule-form-container">
-      <h2>Schedule Service with <span id="selectedTechnicianName"></span></h2>
+      <h2>Agendar Serviço com <span id="selectedTechnicianName"></span></h2>
       <form id="scheduleForm" class="schedule-form">
-        <label for="serviceDate">Select Date:</label>
+        <label for="serviceDate">Escolher Data:</label>
         <input type="date" id="serviceDate" name="serviceDate" required min="" />
-        <label for="serviceTime">Select Time:</label>
+        <label for="serviceTime">Escolher Hora:</label>
         <input type="time" id="serviceTime" name="serviceTime" required />
-        <button type="submit">Confirm Scheduling</button>
-        <button type="button" id="cancelScheduleBtn" style="margin-left: 1rem; background-color: #a3d977;">Cancel</button>
+        <button type="submit">Confirmar Agendamento</button>
+        <button type="button" id="cancelScheduleBtn" style="margin-left: 1rem; background-color: #a3d977;">Cancelar</button>
       </form>
     </div>
 
@@ -157,7 +157,7 @@
           address: 'Rua dos Técnicos 10, 4000-222 Porto',
           dob: '1990-05-15',
           experience: '15',
-          specialization: 'Refrigerators',
+          specialization: 'Frigoríficos',
           capabilities: 'default.pdf'
         },
         {
@@ -168,7 +168,7 @@
           address: 'Avenida da Liberdade 45, 4000-123 Porto',
           dob: '1985-08-20',
           experience: '10',
-          specialization: 'Washing Machines',
+          specialization: 'Máquinas de Lavar',
           capabilities: 'maria.pdf'
         },
         {
@@ -179,7 +179,7 @@
           address: 'Rua do Comércio 12, 4000-456 Porto',
           dob: '1980-02-10',
           experience: '20',
-          specialization: 'Microwaves',
+          specialization: 'Micro-ondas',
           capabilities: 'joao.pdf'
         }
       ];
@@ -218,7 +218,7 @@
     function renderTechnicianList() {
       technicianList.innerHTML = '';
       if (filteredTechnicians.length === 0) {
-        technicianList.innerHTML = '<li>No technicians found matching the filters.</li>';
+        technicianList.innerHTML = '<li>Nenhum técnico corresponde aos filtros.</li>';
         return;
       }
       filteredTechnicians.forEach(tech => {
@@ -227,11 +227,11 @@
         li.tabIndex = 0;
         li.innerHTML = `
         <strong>${tech.username}</strong><br/>
-        Specialization: ${tech.specialization}<br/>
-        Location: ${tech.address}<br/>
-        Experience: ${tech.experience} years<br/>
-        Phone: ${tech.phone}<br/>
-        Evaluation Score: ${getTechnicianScore(tech.username)}
+        Especialização: ${tech.specialization}<br/>
+        Localização: ${tech.address}<br/>
+        Experiência: ${tech.experience} anos<br/>
+        Telefone: ${tech.phone}<br/>
+        Classificação: ${getTechnicianScore(tech.username)}
         `;
         li.addEventListener('click', () => {
           selectedTechnician = tech;
@@ -269,7 +269,7 @@
     function getTechnicianScore(username) {
       const evaluations = getEvaluations();
       const techEvals = evaluations.filter(e => e.technician === username);
-      if (techEvals.length === 0) return 'No ratings';
+      if (techEvals.length === 0) return 'Sem classificações';
       const sum = techEvals.reduce((acc, e) => acc + e.rating, 0);
       return (sum / techEvals.length).toFixed(2);
     }
@@ -289,14 +289,14 @@
       const date = scheduleForm.serviceDate.value;
       const time = scheduleForm.serviceTime.value;
       if (!date || !time) {
-        alert('Please select both date and time.');
+        alert('Por favor, selecione data e hora.');
         return;
       }
 
       // Save booking to backend server
       const client = sessionStorage.getItem('loggedClient');
       if (!client) {
-        alert('You must be logged in to schedule a service.');
+        alert('É necessário iniciar sessão para agendar um serviço.');
         return;
       }
       const bookingData = {
@@ -304,7 +304,7 @@
         technician: selectedTechnician.username,
         date,
         time,
-        status: 'Scheduled'
+        status: 'Agendado'
       };
 
       // Save booking to localStorage instead of backend
@@ -315,7 +315,7 @@
 
       scheduleFormContainer.style.display = 'none';
       confirmationMessage.style.display = 'block';
-      confirmationMessage.textContent = `Service scheduled with ${selectedTechnician.username} on ${date} at ${time}. Thank you!`;
+      confirmationMessage.textContent = `Serviço agendado com ${selectedTechnician.username} em ${date} às ${time}. Obrigado!`;
     });
 
     cancelScheduleBtn.addEventListener('click', () => {
@@ -337,3 +337,4 @@
   </script>
 </body>
 </html>
+
