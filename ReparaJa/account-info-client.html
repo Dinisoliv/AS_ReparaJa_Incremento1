@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Account Information - Client</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    .account-info {
+      max-width: 600px;
+      margin: 20px auto;
+      padding: 15px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="navbar-logo">
+      <img src="ReparaJaLogo.png" alt="ReparaJá Logo" style="height: 30px; vertical-align: middle; margin-right: 8px; background: transparent;" />
+      ReparaJá
+    </div>
+    <ul class="navbar-links">
+      <li><a href="client-dashboard.html">Dashboard</a></li>
+      <li><a href="schedule-service.html">Schedule Service</a></li>
+      <li><a href="booked-services.html">Booked Services</a></li>
+      <li><a href="service-history-client.html">Service History</a></li>
+      <li><a href="account-info-client.html" class="active">Account Info</a></li>
+      <li><a href="login-client.html" id="logoutBtn">Logout</a></li>
+    </ul>
+  </nav>
+
+  <main class="main-content">
+    <h1>Account Information</h1>
+    <div class="account-info" id="accountInfo">
+      <!-- Client account info will be displayed here -->
+    </div>
+  </main>
+
+  <script>
+    // Load logged-in client info from sessionStorage
+    const loggedClientUsername = sessionStorage.getItem('loggedClient');
+
+    const accountInfoDiv = document.getElementById('accountInfo');
+
+    function renderAccountInfo() {
+      if (!loggedClientUsername) {
+        accountInfoDiv.innerHTML = '<p>No client is currently logged in.</p>';
+        return;
+      }
+      // Load client info from localStorage users array
+      const users = JSON.parse(localStorage.getItem('users')) || [];
+      const clientInfo = users.find(user => user.username === loggedClientUsername);
+
+      if (!clientInfo) {
+        accountInfoDiv.innerHTML = `<p>Client info for ${loggedClientUsername} not found.</p>`;
+        return;
+      }
+
+      accountInfoDiv.innerHTML = `
+        <p><strong>Name:</strong> ${clientInfo.name || clientInfo.username}</p>
+        <p><strong>Email:</strong> ${clientInfo.email || 'N/A'}</p>
+        <p><strong>Phone:</strong> ${clientInfo.phone || 'N/A'}</p>
+        <p><strong>Address:</strong> ${clientInfo.address || 'N/A'}</p>
+      `;
+    }
+
+    renderAccountInfo();
+
+    // Logout button functionality
+    document.getElementById('logoutBtn').addEventListener('click', function() {
+      sessionStorage.removeItem('loggedClient');
+      sessionStorage.removeItem('loggedClientInfo');
+    });
+  </script>
+</body>
+</html>

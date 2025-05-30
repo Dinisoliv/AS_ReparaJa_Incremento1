@@ -3,68 +3,91 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Account Information - ReparaJá</title>
+  <title>Account Information - Technician</title>
   <link rel="stylesheet" href="styles.css" />
+  <style>
+    .account-info {
+      max-width: 600px;
+      margin: 20px auto;
+      padding: 15px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+    .stat {
+      margin-top: 10px;
+      font-weight: bold;
+    }
+  </style>
 </head>
 <body>
   <nav class="navbar">
-    <div class="navbar-logo">ReparaJá</div>
+    <div class="navbar-logo">
+      <img src="ReparaJaLogo.png" alt="ReparaJá Logo" style="height: 30px; vertical-align: middle; margin-right: 8px; background: transparent;" />
+      ReparaJá
+    </div>
     <ul class="navbar-links">
-      <li><a href="client-dashboard.html">Dashboard</a></li>
-      <li><a href="login-client.html" id="logoutBtn">Logout</a></li>
+      <li><a href="technician-dashboard.html">Dashboard</a></li>
+      <li><a href="assigned-jobs.html">Assigned Jobs</a></li>
+      <li><a href="update-availability.html">Update Availability</a></li>
+      <li><a href="service-history.html">Service History</a></li>
+      <li><a href="account-info.html" class="active">Account Info</a></li>
+      <li><a href="login-technician.html" id="logoutBtn">Logout</a></li>
     </ul>
   </nav>
+
   <main class="main-content">
     <h1>Account Information</h1>
-    <div id="account-details">
-      <!-- Client info will be loaded here -->
+    <div class="account-info" id="accountInfo">
+      <!-- Existing account info will be displayed here -->
     </div>
+    <div class="stat" id="totalServices"></div>
+    <div class="stat" id="averageEvaluation"></div>
   </main>
-  <script>
-    // Helper to get users from localStorage
-    function getUsers() {
-      const users = localStorage.getItem('users');
-      return users ? JSON.parse(users) : [];
-    }
 
-    // Try to get logged client from sessionStorage, fallback to default
-    function getCurrentClient() {
-      const logged = sessionStorage.getItem('loggedClient');
-      const users = getUsers();
-      let client = null;
-      if (logged) {
-        client = users.find(u =>
-          u.username && u.username.toLowerCase() === logged.toLowerCase()
-        );
-      }
-      if (!client) {
-        // fallback to default client
-        client = users.find(u =>
-          u.username && u.username.toLowerCase() === "client123"
-        );
-      }
-      return client;
-    }
+  <script>
+    // Load logged-in technician info from sessionStorage
+    const loggedTechnician = JSON.parse(sessionStorage.getItem('loggedTechnicianInfo')) || {
+      name: 'Technician Name',
+      email: 'technician@example.com',
+      phone: '123-456-7890',
+      address: '123 Main St, City, Country'
+    };
+
+    // Sample completed services with evaluations
+    const completedServices = [
+      { id: 1, evaluation: 4.5 },
+      { id: 2, evaluation: 5.0 },
+      { id: 3, evaluation: 4.0 }
+    ];
+
+    const accountInfoDiv = document.getElementById('accountInfo');
+    const totalServicesDiv = document.getElementById('totalServices');
+    const averageEvaluationDiv = document.getElementById('averageEvaluation');
 
     function renderAccountInfo() {
-      const client = getCurrentClient();
-      const container = document.getElementById('account-details');
-      if (!client) {
-        container.innerHTML = "<p>No client information found.</p>";
-        return;
-      }
-      container.innerHTML = `
-        <table class="account-table">
-          <tr><th>Username</th><td>${client.username || ""}</td></tr>
-          <tr><th>Email</th><td>${client.email || ""}</td></tr>
-          <tr><th>Phone</th><td>${client.phone || ""}</td></tr>
-          <tr><th>Address</th><td>${client.address || ""}</td></tr>
-          <tr><th>Date of Birth</th><td>${client.dob || ""}</td></tr>
-        </table>
+      accountInfoDiv.innerHTML = `
+        <p><strong>Name:</strong> ${loggedTechnician.name}</p>
+        <p><strong>Email:</strong> ${loggedTechnician.email}</p>
+        <p><strong>Phone:</strong> ${loggedTechnician.phone}</p>
+        <p><strong>Address:</strong> ${loggedTechnician.address}</p>
       `;
     }
 
+    function renderStats() {
+      const total = completedServices.length;
+      const avgEval = (completedServices.reduce((sum, s) => sum + s.evaluation, 0) / total).toFixed(2);
+      totalServicesDiv.textContent = `Total Services Completed: ${total}`;
+      averageEvaluationDiv.textContent = `Average Evaluation: ${avgEval} / 5`;
+    }
+
     renderAccountInfo();
+    renderStats();
+
+    // Logout button functionality
+    document.getElementById('logoutBtn').addEventListener('click', function() {
+      sessionStorage.removeItem('loggedTechnician');
+      sessionStorage.removeItem('loggedTechnicianInfo');
+    });
   </script>
 </body>
 </html>

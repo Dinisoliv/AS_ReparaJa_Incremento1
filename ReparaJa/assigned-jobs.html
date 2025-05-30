@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Assigned Jobs - Technician</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    .job-list {
+      list-style: none;
+      padding: 0;
+    }
+    .job-item {
+      border: 1px solid #ccc;
+      padding: 12px;
+      margin-bottom: 10px;
+      border-radius: 4px;
+    }
+    .cancel-btn {
+      background-color: #dc3545;
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+    .chat-container {
+      border: 1px solid #ccc;
+      padding: 10px;
+      margin-top: 20px;
+      max-width: 600px;
+    }
+    .chat-messages {
+      height: 200px;
+      overflow-y: auto;
+      border: 1px solid #ddd;
+      padding: 8px;
+      margin-bottom: 10px;
+      background: #f9f9f9;
+    }
+    .chat-input {
+      width: 100%;
+      padding: 8px;
+      box-sizing: border-box;
+    }
+    .justify-input {
+      width: 100%;
+      margin-top: 8px;
+      padding: 6px;
+      box-sizing: border-box;
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="navbar-logo">
+      <img src="ReparaJaLogo.png" alt="ReparaJá Logo" style="height: 30px; vertical-align: middle; margin-right: 8px; background: transparent;" />
+      ReparaJá
+    </div>
+    <ul class="navbar-links">
+      <li><a href="technician-dashboard.html">Dashboard</a></li>
+      <li><a href="assigned-jobs.html" class="active">Assigned Jobs</a></li>
+      <li><a href="update-availability.html">Update Availability</a></li>
+      <li><a href="service-history.html">Service History</a></li>
+      <li><a href="account-info.html">Account Info</a></li>
+      <li><a href="login-technician.html" id="logoutBtn">Logout</a></li>
+    </ul>
+  </nav>
+
+  <main class="main-content">
+    <h1>Assigned Jobs</h1>
+  <ul id="jobList" class="job-list">
+      <!-- Jobs will be dynamically inserted here -->
+    </ul>
+
+    <div class="chat-container" style="display:none;">
+      <h2>Chat with Client: <span id="chatClientName"></span></h2>
+      <div id="chatMessages" class="chat-messages"></div>
+      <input type="text" id="chatInput" class="chat-input" placeholder="Type a message..." />
+      <button id="sendChatBtn">Send</button>
+    </div>
+  </main>
+
+  <script>
+    // Load assigned jobs from localStorage bookings filtered for logged-in technician
+    function getAssignedJobs() {
+      const loggedTechnician = sessionStorage.getItem('loggedTechnician');
+      if (!loggedTechnician) return Promise.resolve([]);
+      return fetch('http://localhost:3001/bookings/filter?technician=' + encodeURIComponent(loggedTechnician))
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Failed to fetch assigned jobs');
+          }
+          return response.json();
+        });
+    }
+
+    const jobList = document.getElementById('jobList');
+    const chatContainer = document.querySelector('.chat-container');
+    const chatClientName = document.getElementById('chatClientName');
+    const chatMessages = document.getElementById('chatMessages');
+    const chatInput = document.getElementById('chatInput');
+    const sendChatBtn = document.getElementById('sendChatBtn');
+
+    let currentChatJobId = null;
+
+    function renderJobs() {
+      jobList.innerHTML = '';
+      getAssignedJobs()
+        .then(assignedJobs => {
+          assignedJobs.forEach(job => {
+            const li = document.createElement('li');
+            li.className = 'job-item';
+            li.innerHTML = `
+              <strong>Client:</strong> ${job.client}<br/>
+              <strong>Address:</strong> ${job.address || 'N/A'}<br/>
+              <strong>Date:</strong> ${job.date || 'N/A'}<br/>
+              <strong>Time:</strong> ${job.time || 'N/A'}<br/>
+              <strong>Job Type:</strong> ${job.category || 'General'}<br/>
+              <strong>Description:</strong> ${job.description}<br/>
+              <button class="cancel-btn" data-id="${job.id}">Cancel Job</button>
+              <button class="mark-completed-btn" data-id="${job.id}">Mark as Completed</button>
+              <button class="chat-btn" data-id="${job.id}">Chat</button>
+              <textarea class="justify-input" placeholder="Enter cancellation justification" data-id="${job.id}"></textarea>
+            `;
+            jobList.appendChild(li);
+          });
+
+          // Add event listeners for cancel buttons
+          document.querySelectorAll('.cancel-btn').forEach(button => {
+            button.addEventListener('click', () => {
+              const jobId = parseInt(button.getAttribute('data-id'));
+              const justificationInput = document.querySelector(`.justify-input[data-id="${jobId}"]`);
+              const justification = justificationInput.value.trim();
+              if (!justification) {
+                alert('Please enter a justification for cancellation.');
+                return;
+              }
+              cancelJob(jobId, justification);
+            });
+          });
+
+          // Add event listeners for chat buttons
+          document.querySelectorAll('.chat-btn').forEach(button => {
+            button.addEventListener('click', () => {
+              const jobId = parseInt(button.getAttribute('data-id'));
+              openChat(jobId);
+            });
+          });
+        })
+        .catch(error => {
+          alert('Error loading assigned jobs: ' + error.message);
+        });
+    }
+    function openChat(jobId) {
+      getAssignedJobs()
+        .then(assignedJobs => {
+          const job = assignedJobs.find(j => j.id === jobId);
+          if (!job) return;
+          currentChatJobId = jobId;
+          chatClientName.textContent = job.client;
+          chatContainer.style.display = 'block';
+          renderChatMessages(job.chat);
+        })
+        .catch(error => {
+          alert('Error opening chat: ' + error.message);
+        });
+    }
+    function openChat(jobId) {
+      getAssignedJobs()
+        .then(assignedJobs => {
+          const job = assignedJobs.find(j => j.id === jobId);
+          if (!job) return;
+          currentChatJobId = jobId;
+          chatClientName.textContent = job.client;
+          chatContainer.style.display = 'block';
+          renderChatMessages(job.chat);
+        })
+        .catch(error => {
+          alert('Error opening chat: ' + error.message);
+        });
+    }
+
+    function cancelJob(jobId, justification) {
+      fetch(`http://localhost:3001/bookings/${jobId}`, {
+        method: 'DELETE'
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Failed to cancel job');
+        }
+        alert('Job cancelled and justification sent to client.');
+        renderJobs();
+        closeChatIfOpen(jobId);
+      })
+      .catch(error => {
+        alert(error.message);
+      });
+    }
+
+    function openChat(jobId) {
+      getAssignedJobs()
+        .then(assignedJobs => {
+          const job = assignedJobs.find(j => j.id === jobId);
+          if (!job) return;
+          currentChatJobId = jobId;
+          chatClientName.textContent = job.client;
+          chatContainer.style.display = 'block';
+          renderChatMessages(job.chat);
+        })
+        .catch(error => {
+          alert('Error opening chat: ' + error.message);
+        });
+    }
+
+    function closeChatIfOpen(jobId) {
+      if (currentChatJobId === jobId) {
+        chatContainer.style.display = 'none';
+        currentChatJobId = null;
+        chatMessages.innerHTML = '';
+      }
+    }
+
+    function renderChatMessages(messages) {
+      chatMessages.innerHTML = '';
+      messages.forEach(msg => {
+        const msgDiv = document.createElement('div');
+        msgDiv.textContent = `${msg.sender}: ${msg.text}`;
+        chatMessages.appendChild(msgDiv);
+      });
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    sendChatBtn.addEventListener('click', () => {
+      const message = chatInput.value.trim();
+      if (message && currentChatJobId !== null) {
+        // TODO: Implement chat message sending via backend
+        alert('Chat message sending is not yet implemented.');
+        chatInput.value = '';
+      }
+    });
+
+    // Initial render
+    renderJobs();
+
+    // Logout button functionality
+    document.getElementById('logoutBtn').addEventListener('click', function() {
+      sessionStorage.removeItem('loggedTechnician');
+    });
+  </script>
+</body>
+</html>

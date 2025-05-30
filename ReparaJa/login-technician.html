@@ -83,10 +83,21 @@
           return;
         }
         errorMsg.style.display = "none";
-        alert("Technician login successful!");
-        // Optionally, redirect to technician dashboard here
-      });
-    </script>
+      alert("Technician login successful!");
+      sessionStorage.setItem('loggedTechnician', usernameOrEmail);
+
+      // Store detailed technician info in sessionStorage for account-info page
+      const technicianInfo = {
+        name: tech.username || usernameOrEmail,
+        email: tech.email || '',
+        phone: tech.phone || '',
+        address: tech.address || ''
+      };
+      sessionStorage.setItem('loggedTechnicianInfo', JSON.stringify(technicianInfo));
+
+      window.location.href = "technician-dashboard.html";
+    });
+  </script>
   </main>
 </body>
 </html>

@@ -100,7 +100,7 @@
       <li><a href="schedule-service.html">Schedule Service</a></li>
       <li><a href="booked-services.html">Booked Services</a></li>
       <li><a href="service-history.html">Service History</a></li>
-      <li><a href="account-info.html">Account Info</a></li>
+      <li><a href="account-info-client.html">Account Info</a></li>
       <li><a href="contact.html">Contact</a></li>
       <li><a href="login-client.html" id="logoutBtn">Logout</a></li>
     </ul>
@@ -293,20 +293,24 @@
         return;
       }
 
-      // Save booking to localStorage
+      // Save booking to backend server
       const client = sessionStorage.getItem('loggedClient');
       if (!client) {
         alert('You must be logged in to schedule a service.');
         return;
       }
-      const bookings = JSON.parse(localStorage.getItem('bookings') || '[]');
-      bookings.push({
+      const bookingData = {
         client,
         technician: selectedTechnician.username,
         date,
         time,
         status: 'Scheduled'
-      });
+      };
+
+      // Save booking to localStorage instead of backend
+      let bookings = localStorage.getItem('bookings');
+      bookings = bookings ? JSON.parse(bookings) : [];
+      bookings.push(bookingData);
       localStorage.setItem('bookings', JSON.stringify(bookings));
 
       scheduleFormContainer.style.display = 'none';

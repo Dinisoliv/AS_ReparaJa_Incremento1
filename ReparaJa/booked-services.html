@@ -46,8 +46,8 @@
       <li><a href="client-dashboard.html">Dashboard</a></li>
       <li><a href="schedule-service.html">Schedule Service</a></li>
       <li><a href="booked-services.html">Booked Services</a></li>
-      <li><a href="service-history.html">Service History</a></li>
-      <li><a href="account-info.html">Account Info</a></li>
+      <li><a href="service-history-client.html">Service History</a></li>
+      <li><a href="account-info-client.html">Account Info</a></li>
       <li><a href="contact.html">Contact</a></li>
       <li><a href="login-client.html" id="logoutBtn">Logout</a></li>
     </ul>
@@ -60,7 +60,33 @@
   <script>
     function getBookings() {
       const bookings = localStorage.getItem('bookings');
-      return bookings ? JSON.parse(bookings) : [];
+      if (bookings) {
+        return JSON.parse(bookings);
+      } else {
+        // Provide example bookings if none exist
+        const exampleBookings = [
+          {
+            client: 'exampleClient',
+            technician: 'Alice Johnson',
+            date: '2023-06-15',
+            time: '14:00',
+            address: '123 Main St',
+            category: 'Electronics',
+            status: 'Scheduled'
+          },
+          {
+            client: 'exampleClient',
+            technician: 'Bob Lee',
+            date: '2023-06-20',
+            time: '10:30',
+            address: '456 Oak Ave',
+            category: 'Computers',
+            status: 'Scheduled'
+          }
+        ];
+        localStorage.setItem('bookings', JSON.stringify(exampleBookings));
+        return exampleBookings;
+      }
     }
 
     function saveBookings(bookings) {
@@ -92,6 +118,8 @@
           <strong>Technician:</strong> ${booking.technician}<br/>
           <strong>Date:</strong> ${booking.date}<br/>
           <strong>Time:</strong> ${booking.time}<br/>
+          <strong>Address:</strong> ${booking.address || 'N/A'}<br/>
+          <strong>Category:</strong> ${booking.category || 'General'}<br/>
           <strong>Status:</strong> ${booking.status || 'Scheduled'}<br/>
           <button class="cancel-btn">Cancel Booking</button>
           <button class="chat-btn" style="margin-left: 10px;">Chat</button>
@@ -113,10 +141,8 @@
         const chatInput = li.querySelector('.chat-input');
         const sendChatBtn = li.querySelector('.send-chat-btn');
 
-        // Unique chat key for this booking
         const chatKey = `chat_${booking.client}_${booking.technician}_${booking.date}_${booking.time}`;
 
-        // Load chat messages from localStorage
         function loadChatMessages() {
           chatMessages.innerHTML = '';
           const messages = JSON.parse(localStorage.getItem(chatKey) || '[]');
@@ -128,7 +154,6 @@
           chatMessages.scrollTop = chatMessages.scrollHeight;
         }
 
-        // Save chat message to localStorage
         function saveChatMessage(text, sender) {
           const messages = JSON.parse(localStorage.getItem(chatKey) || '[]');
           const timestamp = new Date().toLocaleString();

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Update Availability - Technician</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    .availability-form {
+      max-width: 400px;
+      margin: 20px auto;
+      padding: 15px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+    label {
+      display: block;
+      margin-top: 10px;
+    }
+    input[type="checkbox"] {
+      margin-right: 8px;
+    }
+    button {
+      margin-top: 15px;
+      padding: 8px 16px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .message {
+      margin-top: 10px;
+      color: green;
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="navbar-logo">
+      <img src="ReparaJaLogo.png" alt="ReparaJá Logo" style="height: 30px; vertical-align: middle; margin-right: 8px; background: transparent;" />
+      ReparaJá
+    </div>
+    <ul class="navbar-links">
+      <li><a href="technician-dashboard.html">Dashboard</a></li>
+      <li><a href="assigned-jobs.html">Assigned Jobs</a></li>
+      <li><a href="update-availability.html" class="active">Update Availability</a></li>
+      <li><a href="service-history.html">Service History</a></li>
+      <li><a href="account-info.html">Account Info</a></li>
+      <li><a href="login-technician.html" id="logoutBtn">Logout</a></li>
+    </ul>
+  </nav>
+
+  <main class="main-content">
+    <h1>Update Availability</h1>
+    <form id="availabilityForm" class="availability-form">
+      <label><input type="checkbox" name="monday" /> Monday</label>
+      <label><input type="checkbox" name="tuesday" /> Tuesday</label>
+      <label><input type="checkbox" name="wednesday" /> Wednesday</label>
+      <label><input type="checkbox" name="thursday" /> Thursday</label>
+      <label><input type="checkbox" name="friday" /> Friday</label>
+      <label><input type="checkbox" name="saturday" /> Saturday</label>
+      <label><input type="checkbox" name="sunday" /> Sunday</label>
+      <button type="submit">Save Availability</button>
+    </form>
+    <div id="message" class="message"></div>
+  </main>
+
+  <script>
+    const form = document.getElementById('availabilityForm');
+    const messageDiv = document.getElementById('message');
+
+    // Load saved availability from localStorage
+    function loadAvailability() {
+      const availability = JSON.parse(localStorage.getItem('technicianAvailability')) || {};
+      for (const day in availability) {
+        const checkbox = form.elements[day];
+        if (checkbox) {
+          checkbox.checked = availability[day];
+        }
+      }
+    }
+
+    // Save availability to localStorage
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const availability = {};
+      for (const element of form.elements) {
+        if (element.type === 'checkbox') {
+          availability[element.name] = element.checked;
+        }
+      }
+      localStorage.setItem('technicianAvailability', JSON.stringify(availability));
+      messageDiv.textContent = 'Availability saved successfully.';
+    });
+
+    // Initialize form with saved data
+    loadAvailability();
+
+    // Logout button functionality
+    document.getElementById('logoutBtn').addEventListener('click', function() {
+      sessionStorage.removeItem('loggedTechnician');
+    });
+  </script>
+</body>
+</html>
