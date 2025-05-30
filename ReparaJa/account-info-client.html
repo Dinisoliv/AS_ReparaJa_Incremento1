@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Account Information - Client</title>
+  <title>Informações da Conta - Cliente</title>
   <link rel="stylesheet" href="styles.css" />
   <style>
     .account-info {
@@ -18,57 +18,57 @@
 <body>
   <nav class="navbar">
     <div class="navbar-logo">
-      <img src="ReparaJaLogo.png" alt="ReparaJá Logo" style="height: 30px; vertical-align: middle; margin-right: 8px; background: transparent;" />
+      <img src="ReparaJaLogo.png" alt="Logótipo ReparaJá" style="height: 30px; vertical-align: middle; margin-right: 8px; background: transparent;" />
       ReparaJá
     </div>
     <ul class="navbar-links">
-      <li><a href="client-dashboard.html">Dashboard</a></li>
-      <li><a href="schedule-service.html">Schedule Service</a></li>
-      <li><a href="booked-services.html">Booked Services</a></li>
-      <li><a href="service-history-client.html">Service History</a></li>
-      <li><a href="account-info-client.html" class="active">Account Info</a></li>
-      <li><a href="login-client.html" id="logoutBtn">Logout</a></li>
+      <li><a href="client-dashboard.html">Painel</a></li>
+      <li><a href="schedule-service.html">Agendar Serviço</a></li>
+      <li><a href="booked-services.html">Serviços Agendados</a></li>
+      <li><a href="service-history-client.html">Histórico de Serviços</a></li>
+      <li><a href="account-info-client.html" class="active">Informações da Conta</a></li>
+      <li><a href="login-client.html" id="logoutBtn">Terminar Sessão</a></li>
     </ul>
   </nav>
 
   <main class="main-content">
-    <h1>Account Information</h1>
+    <h1>Informações da Conta</h1>
     <div class="account-info" id="accountInfo">
-      <!-- Client account info will be displayed here -->
+      <!-- As informações da conta do cliente serão exibidas aqui -->
     </div>
   </main>
 
   <script>
-    // Load logged-in client info from sessionStorage
+    // Carregar informações do cliente com sessão iniciada a partir do sessionStorage
     const loggedClientUsername = sessionStorage.getItem('loggedClient');
 
     const accountInfoDiv = document.getElementById('accountInfo');
 
     function renderAccountInfo() {
       if (!loggedClientUsername) {
-        accountInfoDiv.innerHTML = '<p>No client is currently logged in.</p>';
+        accountInfoDiv.innerHTML = '<p>Nenhum cliente com sessão iniciada de momento.</p>';
         return;
       }
-      // Load client info from localStorage users array
+      // Carregar informações do cliente a partir do array de utilizadores no localStorage
       const users = JSON.parse(localStorage.getItem('users')) || [];
       const clientInfo = users.find(user => user.username === loggedClientUsername);
 
       if (!clientInfo) {
-        accountInfoDiv.innerHTML = `<p>Client info for ${loggedClientUsername} not found.</p>`;
+        accountInfoDiv.innerHTML = `<p>Informações do cliente ${loggedClientUsername} não encontradas.</p>`;
         return;
       }
 
       accountInfoDiv.innerHTML = `
-        <p><strong>Name:</strong> ${clientInfo.name || clientInfo.username}</p>
-        <p><strong>Email:</strong> ${clientInfo.email || 'N/A'}</p>
-        <p><strong>Phone:</strong> ${clientInfo.phone || 'N/A'}</p>
-        <p><strong>Address:</strong> ${clientInfo.address || 'N/A'}</p>
+        <p><strong>Nome:</strong> ${clientInfo.name || clientInfo.username}</p>
+        <p><strong>Email:</strong> ${clientInfo.email || 'N/D'}</p>
+        <p><strong>Telemóvel:</strong> ${clientInfo.phone || 'N/D'}</p>
+        <p><strong>Morada:</strong> ${clientInfo.address || 'N/D'}</p>
       `;
     }
 
     renderAccountInfo();
 
-    // Logout button functionality
+    // Funcionalidade do botão de terminar sessão
     document.getElementById('logoutBtn').addEventListener('click', function() {
       sessionStorage.removeItem('loggedClient');
       sessionStorage.removeItem('loggedClientInfo');
@@ -76,3 +76,4 @@
   </script>
 </body>
 </html>
+
