@@ -1,46 +1,46 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>ReparaJá - Client Login</title>
+  <title>ReparaJá - Login Cliente</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <nav class="navbar">
     <div class="navbar-logo">ReparaJá</div>
     <ul class="navbar-links">
-      <li><a href="index.html">Home</a></li>
-      <li><a href="services.html">Services</a></li>
-      <li><a href="about.html">About</a></li>
-      <li><a href="contact.html">Contact</a></li>
+      <li><a href="index.html">Início</a></li>
+      <li><a href="services.html">Serviços</a></li>
+      <li><a href="about.html">Sobre</a></li>
+      <li><a href="contact.html">Contacto</a></li>
     </ul>
   </nav>
 
   <main class="main-content">
-    <h1>Client Login</h1>
+    <h1>Login Cliente</h1>
     <form action="#" method="post" class="login-form" id="loginForm">
-      <label for="username">Username or Email:</label><br/>
+      <label for="username">Nome de utilizador ou Email:</label><br/>
       <input type="text" id="username" name="username" required /><br/>
-      <label for="password">Password:</label><br/>
+      <label for="password">Palavra-passe:</label><br/>
       <input type="password" id="password" name="password" required /><br/>
-      <button type="submit" class="btn btn-client">Login</button>
+      <button type="submit" class="btn btn-client">Iniciar sessão</button>
       <p id="login-error" style="color: red; margin-top: 10px; display: none;"></p>
     </form>
-    <p>Don't have an account? <a href="create-account-client.html" class="btn btn-client">Create an Account</a></p>
+    <p>Não tem conta? <a href="create-account-client.html" class="btn btn-client">Criar uma Conta</a></p>
     <script>
-      // Ensure default client exists in localStorage
+      // Garante que o cliente padrão existe no localStorage
       function ensureDefaultClient() {
         const users = localStorage.getItem('users');
         let usersArr = users ? JSON.parse(users) : [];
         const defaultUsername = "Client123";
         const defaultEmail = "client123@reparaja.pt";
-        // Check if default client already exists
+        // Verifica se o cliente padrão já existe
         const exists = usersArr.some(u =>
           (u.username && u.username.toLowerCase() === defaultUsername.toLowerCase()) ||
           (u.email && u.email.toLowerCase() === defaultEmail.toLowerCase())
         );
-      if (!exists) {
+        if (!exists) {
           usersArr.push({
             username: "Client123",
             password: "123",
@@ -71,19 +71,19 @@
         );
         const errorMsg = document.getElementById('login-error');
         if (!user) {
-          errorMsg.textContent = "User not found. Please check your username/email.";
+          errorMsg.textContent = "Utilizador não encontrado. Por favor, verifique o nome de utilizador/email.";
           errorMsg.style.display = "block";
           return;
         }
         if (user.password !== password) {
-          errorMsg.textContent = "Incorrect password. Please try again.";
+          errorMsg.textContent = "Palavra-passe incorreta. Por favor, tente novamente.";
           errorMsg.style.display = "block";
           return;
         }
         errorMsg.style.display = "none";
-        // Store logged in username in sessionStorage
+        // Guarda o nome de utilizador do cliente na sessionStorage
         sessionStorage.setItem('loggedClient', user.username);
-        // Redirect to client dashboard after successful login
+        // Redireciona para o painel do cliente após login com sucesso
         window.location.href = "client-dashboard.html";
       });
     </script>
