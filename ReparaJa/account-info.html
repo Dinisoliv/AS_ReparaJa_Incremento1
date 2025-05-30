@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Account Information - Technician</title>
+  <title>Informações da Conta - Técnico</title>
   <link rel="stylesheet" href="styles.css" />
   <style>
     .account-info {
@@ -22,38 +22,38 @@
 <body>
   <nav class="navbar">
     <div class="navbar-logo">
-      <img src="ReparaJaLogo.png" alt="ReparaJá Logo" style="height: 30px; vertical-align: middle; margin-right: 8px; background: transparent;" />
+      <img src="ReparaJaLogo.png" alt="Logótipo ReparaJá" style="height: 30px; vertical-align: middle; margin-right: 8px; background: transparent;" />
       ReparaJá
     </div>
     <ul class="navbar-links">
-      <li><a href="technician-dashboard.html">Dashboard</a></li>
-      <li><a href="assigned-jobs.html">Assigned Jobs</a></li>
-      <li><a href="update-availability.html">Update Availability</a></li>
-      <li><a href="service-history.html">Service History</a></li>
-      <li><a href="account-info.html" class="active">Account Info</a></li>
-      <li><a href="login-technician.html" id="logoutBtn">Logout</a></li>
+      <li><a href="technician-dashboard.html">Painel</a></li>
+      <li><a href="assigned-jobs.html">Trabalhos Atribuídos</a></li>
+      <li><a href="update-availability.html">Atualizar Disponibilidade</a></li>
+      <li><a href="service-history.html">Histórico de Serviços</a></li>
+      <li><a href="account-info.html" class="active">Informações da Conta</a></li>
+      <li><a href="login-technician.html" id="logoutBtn">Terminar Sessão</a></li>
     </ul>
   </nav>
 
   <main class="main-content">
-    <h1>Account Information</h1>
+    <h1>Informações da Conta</h1>
     <div class="account-info" id="accountInfo">
-      <!-- Existing account info will be displayed here -->
+      <!-- As informações da conta existentes serão exibidas aqui -->
     </div>
     <div class="stat" id="totalServices"></div>
     <div class="stat" id="averageEvaluation"></div>
   </main>
 
   <script>
-    // Load logged-in technician info from sessionStorage
+    // Carregar informações do técnico com sessão iniciada a partir do sessionStorage
     const loggedTechnician = JSON.parse(sessionStorage.getItem('loggedTechnicianInfo')) || {
-      name: 'Technician Name',
-      email: 'technician@example.com',
+      name: 'Nome do Técnico',
+      email: 'tecnico@exemplo.com',
       phone: '123-456-7890',
-      address: '123 Main St, City, Country'
+      address: 'Rua Principal 123, Cidade, País'
     };
 
-    // Sample completed services with evaluations
+    // Serviços concluídos de exemplo com avaliações
     const completedServices = [
       { id: 1, evaluation: 4.5 },
       { id: 2, evaluation: 5.0 },
@@ -66,24 +66,24 @@
 
     function renderAccountInfo() {
       accountInfoDiv.innerHTML = `
-        <p><strong>Name:</strong> ${loggedTechnician.name}</p>
+        <p><strong>Nome:</strong> ${loggedTechnician.name}</p>
         <p><strong>Email:</strong> ${loggedTechnician.email}</p>
-        <p><strong>Phone:</strong> ${loggedTechnician.phone}</p>
-        <p><strong>Address:</strong> ${loggedTechnician.address}</p>
+        <p><strong>Telemóvel:</strong> ${loggedTechnician.phone}</p>
+        <p><strong>Morada:</strong> ${loggedTechnician.address}</p>
       `;
     }
 
     function renderStats() {
       const total = completedServices.length;
       const avgEval = (completedServices.reduce((sum, s) => sum + s.evaluation, 0) / total).toFixed(2);
-      totalServicesDiv.textContent = `Total Services Completed: ${total}`;
-      averageEvaluationDiv.textContent = `Average Evaluation: ${avgEval} / 5`;
+      totalServicesDiv.textContent = `Total de Serviços Concluídos: ${total}`;
+      averageEvaluationDiv.textContent = `Avaliação Média: ${avgEval} / 5`;
     }
 
     renderAccountInfo();
     renderStats();
 
-    // Logout button functionality
+    // Funcionalidade do botão de terminar sessão
     document.getElementById('logoutBtn').addEventListener('click', function() {
       sessionStorage.removeItem('loggedTechnician');
       sessionStorage.removeItem('loggedTechnicianInfo');
