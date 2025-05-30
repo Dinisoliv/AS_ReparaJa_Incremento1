@@ -1,4 +1,4 @@
-/* Base styles for ReparaJá green and white theme */
+/* Estilos base para o tema verde e branco da ReparaJá */
 
 body {
   margin: 0;
@@ -11,7 +11,7 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #2a4d14; /* dark green */
+  background-color: #2a4d14; /* verde escuro */
   padding: 1rem 2rem;
   color: white;
 }
@@ -37,7 +37,7 @@ body {
 }
 
 .navbar-links li a:hover {
-  color: #a3d977; /* lighter green */
+  color: #a3d977; /* verde claro */
 }
 
 .main-content {
@@ -63,12 +63,12 @@ body {
 }
 
 .btn-technician {
-  background-color: #4caf50; /* medium green */
+  background-color: #4caf50; /* verde médio */
   color: white;
 }
 
 .btn-technician:hover {
-  background-color: #388e3c; /* darker green */
+  background-color: #388e3c; /* verde mais escuro */
 }
 
 .btn-client {
@@ -82,3 +82,4 @@ body {
   color: white;
   border-color: #a3d977;
 }
+
