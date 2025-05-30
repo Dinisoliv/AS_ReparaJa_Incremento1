@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>ReparaJá - Technician Dashboard</title>
+  <title>ReparaJá - Painel do Técnico</title>
   <link rel="stylesheet" href="styles.css" />
   <style>
-    /* Example active link style */
+    /* Exemplo de estilo para link ativo */
     .navbar-links li a.active {
       font-weight: bold;
       text-decoration: underline;
@@ -17,41 +17,41 @@
 <body>
   <nav class="navbar">
     <div class="navbar-logo">
-      <img src="ReparaJaLogo.png" alt="ReparaJá Logo" style="height: 30px; vertical-align: middle; margin-right: 8px; background: transparent;" />
+      <img src="ReparaJaLogo.png" alt="Logótipo ReparaJá" style="height: 30px; vertical-align: middle; margin-right: 8px; background: transparent;" />
       ReparaJá
     </div>
     <ul class="navbar-links">
-      <li><a href="technician-dashboard.html" class="active">Dashboard</a></li>
-      <li><a href="assigned-jobs.html">Assigned Jobs</a></li>
-      <li><a href="update-availability.html">Update Availability</a></li>
-      <li><a href="service-history.html">Service History</a></li>
-      <li><a href="account-info.html">Account Info</a></li>
-      <li><a href="login-technician.html" id="logoutBtn">Logout</a></li>
+      <li><a href="technician-dashboard.html" class="active">Painel</a></li>
+      <li><a href="assigned-jobs.html">Trabalhos Atribuídos</a></li>
+      <li><a href="update-availability.html">Atualizar Disponibilidade</a></li>
+      <li><a href="service-history.html">Histórico de Serviços</a></li>
+      <li><a href="account-info.html">Dados da Conta</a></li>
+      <li><a href="login-technician.html" id="logoutBtn">Sair</a></li>
     </ul>
   </nav>
 
   <main class="main-content">
-    <h1>Welcome, <span id="technicianName"></span>!</h1>
+    <h1>Bem-vindo, <span id="technicianName"></span>!</h1>
     <div class="dashboard-options">
       <div class="dashboard-card">
-        <h2>View Assigned Jobs</h2>
-        <p>See the list of jobs assigned to you.</p>
-        <a href="assigned-jobs.html" class="btn btn-technician">View Jobs</a>
+        <h2>Ver Trabalhos Atribuídos</h2>
+        <p>Veja a lista de trabalhos atribuídos a si.</p>
+        <a href="assigned-jobs.html" class="btn btn-technician">Ver Trabalhos</a>
       </div>
       <div class="dashboard-card">
-        <h2>Update Availability</h2>
-        <p>Manage your availability for new service requests.</p>
-        <a href="update-availability.html" class="btn btn-technician">Update</a>
+        <h2>Atualizar Disponibilidade</h2>
+        <p>Gerencie a sua disponibilidade para novos pedidos de serviço.</p>
+        <a href="update-availability.html" class="btn btn-technician">Atualizar</a>
       </div>
       <div class="dashboard-card">
-        <h2>Service History</h2>
-        <p>Review your past completed services.</p>
-        <a href="service-history.html" class="btn btn-technician">History</a>
+        <h2>Histórico de Serviços</h2>
+        <p>Revise os serviços concluídos no passado.</p>
+        <a href="service-history.html" class="btn btn-technician">Histórico</a>
       </div>
       <div class="dashboard-card">
-        <h2>Account Information</h2>
-        <p>View and update your personal account details.</p>
-        <a href="account-info.html" class="btn btn-technician">Account Info</a>
+        <h2>Informação da Conta</h2>
+        <p>Visualize e atualize os seus dados pessoais.</p>
+        <a href="account-info.html" class="btn btn-technician">Dados da Conta</a>
       </div>
     </div>
   </main>
