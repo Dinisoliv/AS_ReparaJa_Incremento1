@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Update Availability - Technician</title>
+  <title>Atualizar Disponibilidade - Técnico</title>
   <link rel="stylesheet" href="styles.css" />
   <style>
     .availability-form {
@@ -38,30 +38,30 @@
 <body>
   <nav class="navbar">
     <div class="navbar-logo">
-      <img src="ReparaJaLogo.png" alt="ReparaJá Logo" style="height: 30px; vertical-align: middle; margin-right: 8px; background: transparent;" />
+      <img src="ReparaJaLogo.png" alt="Logótipo ReparaJá" style="height: 30px; vertical-align: middle; margin-right: 8px; background: transparent;" />
       ReparaJá
     </div>
     <ul class="navbar-links">
-      <li><a href="technician-dashboard.html">Dashboard</a></li>
-      <li><a href="assigned-jobs.html">Assigned Jobs</a></li>
-      <li><a href="update-availability.html" class="active">Update Availability</a></li>
-      <li><a href="service-history.html">Service History</a></li>
-      <li><a href="account-info.html">Account Info</a></li>
-      <li><a href="login-technician.html" id="logoutBtn">Logout</a></li>
+      <li><a href="technician-dashboard.html">Painel</a></li>
+      <li><a href="assigned-jobs.html">Trabalhos Atribuídos</a></li>
+      <li><a href="update-availability.html" class="active">Atualizar Disponibilidade</a></li>
+      <li><a href="service-history.html">Histórico de Serviços</a></li>
+      <li><a href="account-info.html">Dados da Conta</a></li>
+      <li><a href="login-technician.html" id="logoutBtn">Sair</a></li>
     </ul>
   </nav>
 
   <main class="main-content">
-    <h1>Update Availability</h1>
+    <h1>Atualizar Disponibilidade</h1>
     <form id="availabilityForm" class="availability-form">
-      <label><input type="checkbox" name="monday" /> Monday</label>
-      <label><input type="checkbox" name="tuesday" /> Tuesday</label>
-      <label><input type="checkbox" name="wednesday" /> Wednesday</label>
-      <label><input type="checkbox" name="thursday" /> Thursday</label>
-      <label><input type="checkbox" name="friday" /> Friday</label>
-      <label><input type="checkbox" name="saturday" /> Saturday</label>
-      <label><input type="checkbox" name="sunday" /> Sunday</label>
-      <button type="submit">Save Availability</button>
+      <label><input type="checkbox" name="monday" /> Segunda-feira</label>
+      <label><input type="checkbox" name="tuesday" /> Terça-feira</label>
+      <label><input type="checkbox" name="wednesday" /> Quarta-feira</label>
+      <label><input type="checkbox" name="thursday" /> Quinta-feira</label>
+      <label><input type="checkbox" name="friday" /> Sexta-feira</label>
+      <label><input type="checkbox" name="saturday" /> Sábado</label>
+      <label><input type="checkbox" name="sunday" /> Domingo</label>
+      <button type="submit">Guardar Disponibilidade</button>
     </form>
     <div id="message" class="message"></div>
   </main>
@@ -70,7 +70,7 @@
     const form = document.getElementById('availabilityForm');
     const messageDiv = document.getElementById('message');
 
-    // Load saved availability from localStorage
+    // Carregar disponibilidade guardada do localStorage
     function loadAvailability() {
       const availability = JSON.parse(localStorage.getItem('technicianAvailability')) || {};
       for (const day in availability) {
@@ -81,7 +81,7 @@
       }
     }
 
-    // Save availability to localStorage
+    // Guardar disponibilidade no localStorage
     form.addEventListener('submit', (e) => {
       e.preventDefault();
       const availability = {};
@@ -91,16 +91,17 @@
         }
       }
       localStorage.setItem('technicianAvailability', JSON.stringify(availability));
-      messageDiv.textContent = 'Availability saved successfully.';
+      messageDiv.textContent = 'Disponibilidade guardada com sucesso.';
     });
 
-    // Initialize form with saved data
+    // Inicializar formulário com dados guardados
     loadAvailability();
 
-    // Logout button functionality
+    // Funcionalidade do botão sair
     document.getElementById('logoutBtn').addEventListener('click', function() {
       sessionStorage.removeItem('loggedTechnician');
     });
   </script>
 </body>
 </html>
+
