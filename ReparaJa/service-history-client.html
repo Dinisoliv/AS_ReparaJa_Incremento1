@@ -136,6 +136,36 @@
           date: '2023-02-28',
           evaluation: 5,
           completed: true
+        },
+        {
+          id: 5,
+          client: client,
+          technician: 'Carlos Silva',
+          description: 'Substituição da resistência do forno elétrico',
+          category: 'Eletrodomésticos',
+          date: '2023-06-01',
+          evaluation: null,
+          completed: true
+        },
+        {
+          id: 6,
+          client: client,
+          technician: 'Mariana Costa',
+          description: 'Reparação do motor do aspirador de pó',
+          category: 'Eletrodomésticos',
+          date: '2023-05-20',
+          evaluation: 4,
+          completed: true
+        },
+        {
+          id: 7,
+          client: client,
+          technician: 'Pedro Gomes',
+          description: 'Troca do termostato da máquina de lavar louça',
+          category: 'Eletrodomésticos',
+          date: '2023-04-10',
+          evaluation: 5,
+          completed: true
         }
       ];
       localStorage.setItem('completedServices', JSON.stringify(exampleServices));
@@ -175,7 +205,8 @@
         serviceList.innerHTML = '<li>Por favor, inicie sessão para ver o histórico de serviços.</li>';
         return;
       }
-      const completedServices = getCompletedServices().filter(s => s.client === loggedClient);
+      // Temporarily show all services regardless of client for testing
+      const completedServices = getCompletedServices(); // .filter(s => s.client === loggedClient);
       if (completedServices.length === 0) {
         serviceList.innerHTML = '<li>Não foram encontrados serviços concluídos.</li>';
         return;
