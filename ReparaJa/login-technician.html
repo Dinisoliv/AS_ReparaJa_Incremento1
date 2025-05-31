@@ -19,7 +19,7 @@
 
   <main class="main-content">
     <h1>Início de Sessão Técnico</h1>
-    <form action="#" method="post" class="login-form" id="loginForm">
+    <form action="javascript:void(0);" class="login-form" id="loginForm">
       <label for="username">Nome de utilizador ou Email:</label><br/>
       <input type="text" id="username" name="username" required /><br/>
       <label for="password">Palavra-passe:</label><br/>
@@ -73,21 +73,34 @@
         );
         const errorMsg = document.getElementById('login-error');
         if (!tech) {
-          errorMsg.textContent = "Técnico não encontrado. Por favor verifique o nome de utilizador/email.";
-          errorMsg.style.display = "block";
+          alert("Técnico não encontrado. Por favor verifique o nome de utilizador/email.");
           return;
         }
         if (tech.password !== password) {
-          errorMsg.textContent = "Palavra-passe incorreta. Por favor tente novamente.";
-          errorMsg.style.display = "block";
+          alert("Palavra-passe incorreta. Por favor tente novamente.");
           return;
         }
-        errorMsg.style.display = "none";
 
-        alert("Início de sessão do técnico efetuado com sucesso!");
         sessionStorage.setItem('loggedTechnician', usernameOrEmail);
 
         // Store detailed technician info in sessionStorage for account-info page
         const technicianInfo = {
-          name: tech.username
+          name: tech.username,
+          email: tech.email,
+          phone: tech.phone,
+          address: tech.address,
+          dob: tech.dob,
+          experience: tech.experience,
+          specialization: tech.specialization,
+          capabilities: tech.capabilities
+        };
+        sessionStorage.setItem('technicianInfo', JSON.stringify(technicianInfo));
+
+        // Redirect to technician dashboard after successful login
+      window.location.href = './technician-dashboard.html';
+      });
+    </script>
+  </main>
+</body>
+</html>
 
