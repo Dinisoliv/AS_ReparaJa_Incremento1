@@ -34,6 +34,34 @@
     .booking-item button:hover {
       background-color: #c9302c;
     }
+    /* Chat styles adapted from assigned-jobs.html */
+    .chat-container {
+      border: 1px solid #ccc;
+      padding: 10px;
+      margin: 2rem auto;
+      max-width: 600px;
+      background: #fff;
+      display: none;
+    }
+    .chat-header {
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+    .chat-messages {
+      height: 200px;
+      overflow-y: auto;
+      border: 1px solid #ddd;
+      padding: 8px;
+      margin-bottom: 10px;
+      background: #f9f9f9;
+      white-space: pre-wrap;
+    }
+    .chat-input {
+      width: 100%;
+      padding: 8px;
+      box-sizing: border-box;
+      margin-bottom: 8px;
+    }
   </style>
 </head>
 <body>
@@ -56,6 +84,14 @@
     <h1>Serviços Agendados</h1>
     <p>Aqui pode consultar e gerir os seus serviços agendados.</p>
     <ul id="bookingsList" class="bookings-list"></ul>
+
+    <div class="chat-container" id="chatContainer">
+      <div class="chat-header">Chat com Técnico: <span id="chatTechnicianName"></span></div>
+      <div id="chatMessages" class="chat-messages"></div>
+      <input type="text" id="chatInput" class="chat-input" placeholder="Escreve uma mensagem..." />
+      <button id="sendChatBtn">Enviar</button>
+      <button id="closeChatBtn" style="margin-top: 8px;">Fechar Chat</button>
+    </div>
   </main>
   <script>
     function getBookings() {
@@ -72,7 +108,8 @@
             time: '14:00',
             address: 'Rua Principal 123',
             category: 'Eletrónica',
-            status: 'Agendado'
+            status: 'Agendado',
+            chat: []
           },
           {
             client: 'exampleClient',
@@ -81,7 +118,8 @@
             time: '10:30',
             address: 'Avenida dos Carvalhos 456',
             category: 'Computadores',
-            status: 'Agendado'
+            status: 'Agendado',
+            chat: []
           }
         ];
         localStorage.setItem('bookings', JSON.stringify(exampleBookings));
@@ -97,8 +135,119 @@
       return sessionStorage.getItem('loggedClient');
     }
 
-    function renderBookings() {
-      const bookingsList = document.getElementById('bookingsList');
-      bookingsList.in
+    const bookingsList = document.getElementById('bookingsList');
+    const chatContainer = document.getElementById('chatContainer');
+    const chatTechnicianName = document.getElementById('chatTechnicianName');
+    const chatMessages = document.getElementById('chatMessages');
+    const chatInput = document.getElementById('chatInput');
+    const sendChatBtn = document.getElementById('sendChatBtn');
+    const closeChatBtn = document.getElementById('closeChatBtn');
 
+    let currentChatBookingIndex = null;
+
+    function renderBookings() {
+      bookingsList.innerHTML = '';
+
+      const bookings = getBookings();
+
+      if (bookings.length === 0) {
+        bookingsList.innerHTML = '<li>Nenhum serviço agendado.</li>';
+        return;
+      }
+
+      bookings.forEach((booking, index) => {
+        if (!booking.chat) {
+          booking.chat = [];
+        }
+        const li = document.createElement('li');
+        li.className = 'booking-item';
+        li.innerHTML = `
+          <strong>Técnico:</strong> ${booking.technician}<br/>
+          <strong>Data:</strong> ${booking.date}<br/>
+          <strong>Hora:</strong> ${booking.time}<br/>
+          <strong>Status:</strong> ${booking.status || 'Desconhecido'}<br/>
+          ${booking.address ? `<strong>Endereço:</strong> ${booking.address}<br/>` : ''}
+          ${booking.category ? `<strong>Categoria:</strong> ${booking.category}<br/>` : ''}
+          <button data-index="${index}" class="cancel-btn">Cancelar</button>
+<button data-index="${index}" class="chat-btn" style="background-color: #007bff; margin-left: 0.5rem;">Chat</button>
+        `;
+        bookingsList.appendChild(li);
+
+        // Add cancel button event listener
+        const cancelBtn = li.querySelector('.cancel-btn');
+        cancelBtn.addEventListener('click', () => {
+          bookings.splice(index, 1);
+          saveBookings(bookings);
+          renderBookings();
+          if (currentChatBookingIndex === index) {
+            closeChat();
+          }
+        });
+
+        // Add chat button event listener
+        const chatBtn = li.querySelector('.chat-btn');
+        chatBtn.addEventListener('click', () => {
+          openChat(index);
+        });
+      });
+
+      saveBookings(bookings);
     }
+
+    function openChat(index) {
+      const bookings = getBookings();
+      const booking = bookings[index];
+      if (!booking) return;
+      currentChatBookingIndex = index;
+      chatTechnicianName.textContent = booking.technician;
+      chatContainer.style.display = 'block';
+      renderChatMessages(booking.chat || []);
+    }
+
+    function closeChat() {
+      chatContainer.style.display = 'none';
+      currentChatBookingIndex = null;
+      chatMessages.innerHTML = '';
+      chatInput.value = '';
+    }
+
+    function renderChatMessages(messages) {
+      chatMessages.innerHTML = '';
+      messages.forEach(msg => {
+        const msgDiv = document.createElement('div');
+        msgDiv.textContent = msg.sender + ': ' + msg.text;
+        chatMessages.appendChild(msgDiv);
+      });
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    sendChatBtn.addEventListener('click', () => {
+      const message = chatInput.value.trim();
+      if (message && currentChatBookingIndex !== null) {
+        const bookings = getBookings();
+        const booking = bookings[currentChatBookingIndex];
+        if (!booking) return;
+        const loggedClient = getLoggedClient() || 'Cliente';
+        const newMessage = { sender: loggedClient, text: message };
+        if (!booking.chat) {
+          booking.chat = [];
+        }
+        booking.chat.push(newMessage);
+        saveBookings(bookings);
+        renderChatMessages(booking.chat);
+        chatInput.value = '';
+      }
+    });
+
+    closeChatBtn.addEventListener('click', () => {
+      closeChat();
+    });
+
+    // Call renderBookings on page load
+    document.addEventListener('DOMContentLoaded', () => {
+      renderBookings();
+    });
+  </script>
+</body>
+</html>
+

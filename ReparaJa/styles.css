@@ -1,85 +1,354 @@
-/* Estilos base para o tema verde e branco da ReparaJá */
+/* Global styles for ReparaJa */
 
 body {
-  margin: 0;
   font-family: Arial, sans-serif;
-  background-color: #f9fefb;
-  color: #2a4d14;
+  margin: 0;
+  padding: 0;
+  background-color: #f5f5f5;
+  color: #333;
 }
 
 .navbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background-color: #2a4d14; /* verde escuro */
-  padding: 1rem 2rem;
+  background-color: green;
   color: white;
+  display: flex;
+  align-items: center;
+  padding: 10px 20px;
+  font-weight: bold;
 }
 
 .navbar-logo {
-  font-size: 1.5rem;
-  font-weight: bold;
+  display: flex;
+  align-items: center;
+  font-size: 1.2em;
+}
+
+.navbar-logo img {
+  height: 30px;
+  margin-right: 8px;
+  background: transparent;
 }
 
 .navbar-links {
   list-style: none;
   display: flex;
-  gap: 1.5rem;
-  margin: 0;
+  margin-left: auto;
   padding: 0;
 }
 
-.navbar-links li a {
+.navbar-links li {
+  margin-left: 20px;
+}
+
+.navbar-links a {
   color: white;
   text-decoration: none;
-  font-weight: 600;
-  transition: color 0.3s ease;
-}
-
-.navbar-links li a:hover {
-  color: #a3d977; /* verde claro */
-}
-
-.main-content {
-  text-align: center;
-  margin-top: 5rem;
-}
-
-.login-buttons {
-  margin-top: 2rem;
-  display: flex;
-  justify-content: center;
-  gap: 2rem;
-}
-
-.btn {
-  padding: 0.75rem 1.5rem;
-  font-size: 1rem;
-  font-weight: 600;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
+  font-weight: normal;
+  padding: 6px 8px;
+  border-radius: 4px;
   transition: background-color 0.3s ease;
 }
 
-.btn-technician {
-  background-color: #4caf50; /* verde médio */
+.navbar-links a:hover,
+.navbar-links a.active {
+  background-color: darkgreen;
+}
+
+.main-content {
+  max-width: 900px;
+  margin: 20px auto;
+  padding: 0 15px 40px 15px;
+  background: white;
+  border-radius: 6px;
+  box-shadow: 0 0 8px rgba(0,0,0,0.1);
+}
+
+h1 {
+  margin-top: 0;
+  margin-bottom: 20px;
+  color: green;
+}
+
+/* Job and service cards */
+
+.job-list,
+.service-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.job-item,
+.service-item {
+  border: 1px solid #ccc;
+  padding: 15px 20px;
+  margin-bottom: 15px;
+  border-radius: 6px;
+  background-color: #fafafa;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.job-item strong,
+.service-item strong {
+  display: inline-block;
+  width: 130px;
+  color: #555;
+}
+
+.job-details {
+  margin-bottom: 10px;
+}
+
+.buttons-container {
+  margin-top: 10px;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 14px;
+  font-size: 0.9em;
+  margin-right: 10px;
+  transition: background-color 0.3s ease;
   color: white;
 }
 
-.btn-technician:hover {
-  background-color: #388e3c; /* verde mais escuro */
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-decline {
+  background-color: #dc3545;
+}
+
+.btn-decline:hover {
+  background-color: #b02a37;
+}
+
+.btn-accept {
+  background-color: #28a745;
+}
+
+.btn-accept:hover {
+  background-color: #1e7e34;
+}
+
+.btn-chat {
+  background-color: green;
+}
+
+.btn-chat:hover {
+  background-color: darkgreen;
+}
+
+/* Chat container */
+
+.chat-container {
+  border: 1px solid #ccc;
+  padding: 15px;
+  margin-top: 20px;
+  max-width: 600px;
+  background: #fff;
+  border-radius: 6px;
+  box-shadow: 0 0 8px rgba(0,0,0,0.1);
+}
+
+.chat-header {
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: green;
+}
+
+.chat-messages {
+  height: 200px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  padding: 10px;
+  margin-bottom: 10px;
+  background: #f9f9f9;
+  white-space: pre-wrap;
+  border-radius: 4px;
+  font-size: 0.9em;
+  color: #333;
+}
+
+.chat-input {
+  width: 100%;
+  padding: 8px;
+  box-sizing: border-box;
+  margin-bottom: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1em;
+}
+
+.logout-btn {
+  background: transparent;
+  border: none;
+  color: white;
+  cursor: pointer;
+  font-size: 1em;
+  padding: 0;
+  margin-left: 20px;
+}
+
+.logout-btn:hover {
+  text-decoration: underline;
+}
+
+.btn {
+  cursor: pointer;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 14px;
+  font-size: 1em;
+  font-weight: bold;
+  color: white;
+  background-color: darkgreen;
+  text-decoration: none;
+  display: inline-block;
+  text-align: center;
+  transition: background-color 0.3s ease;
 }
 
 .btn-client {
-  background-color: white;
-  color: #2a4d14;
-  border: 2px solid #4caf50;
+  background-color: #28a745; /* green */
 }
 
 .btn-client:hover {
-  background-color: #a3d977;
-  color: white;
-  border-color: #a3d977;
+  background-color: #1e7e34; /* darker green */
 }
 
+.btn-technician {
+  background-color: darkgreen; /* darkgreen */
+}
+
+.btn-technician:hover {
+  background-color: green; /* green */
+}
+
+/* New button styles for service-history-client.html */
+
+.evaluate-btn {
+  background-color: #28a745; /* green */
+  color: white;
+  border-radius: 4px;
+  padding: 8px 14px;
+  font-size: 0.9em;
+  font-weight: bold;
+  cursor: pointer;
+  border: none;
+  margin-right: 10px;
+  transition: background-color 0.3s ease;
+}
+
+.evaluate-btn:hover {
+  background-color: #1e7e34; /* darker green */
+}
+
+.reject-btn {
+  background-color: #dc3545; /* red */
+  color: white;
+  border-radius: 4px;
+  padding: 8px 14px;
+  font-size: 0.9em;
+  font-weight: bold;
+  cursor: pointer;
+  border: none;
+  margin-right: 10px;
+  transition: background-color 0.3s ease;
+}
+
+.reject-btn:hover {
+  background-color: #b02a37; /* darker red */
+}
+
+.confirm-btn {
+  background-color: darkgreen;
+  color: white;
+  border-radius: 4px;
+  padding: 8px 14px;
+  font-size: 0.9em;
+  font-weight: bold;
+  cursor: pointer;
+  border: none;
+  margin-right: 10px;
+  transition: background-color 0.3s ease;
+}
+
+.confirm-btn:hover {
+  background-color: green;
+}
+
+/* Modal buttons */
+
+#modalCancelBtn {
+  background-color: #dc3545; /* red */
+  color: white;
+  border-radius: 4px;
+  padding: 5px 10px;
+  font-size: 0.9em;
+  font-weight: bold;
+  cursor: pointer;
+  border: none;
+  transition: background-color 0.3s ease;
+  margin-right: 10px;
+}
+
+#modalCancelBtn:hover {
+  background-color: #b02a37; /* darker red */
+}
+
+#modalOkBtn {
+  background-color: darkgreen;
+  color: white;
+  border-radius: 4px;
+  padding: 5px 10px;
+  font-size: 0.9em;
+  font-weight: bold;
+  cursor: pointer;
+  border: none;
+  transition: background-color 0.3s ease;
+}
+
+#modalOkBtn:hover {
+  background-color: green;
+}
+
+/* Chat send button */
+#sendChatBtn {
+  background-color: #28a745; /* green */
+  color: white;
+  border-radius: 4px;
+  padding: 8px 14px;
+  font-size: 0.9em;
+  font-weight: bold;
+  cursor: pointer;
+  border: none;
+  margin-right: 10px;
+  transition: background-color 0.3s ease;
+}
+
+#sendChatBtn:hover {
+  background-color: #1e7e34; /* darker green */
+}
+
+/* Chat close button */
+#closeChatBtn {
+  background-color: #dc3545; /* red */
+  color: white;
+  border-radius: 4px;
+  padding: 8px 14px;
+  font-size: 0.9em;
+  font-weight: bold;
+  cursor: pointer;
+  border: none;
+  margin-top: 8px;
+  transition: background-color 0.3s ease;
+}
+
+#closeChatBtn:hover {
+  background-color: #b02a37; /* darker red */
+}

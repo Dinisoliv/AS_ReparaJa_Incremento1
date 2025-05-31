@@ -49,6 +49,39 @@
   </main>
 
   <script>
+    // Inicializar dados de exemplo para serviços concluídos no localStorage, se não existirem
+    function initializeExampleCompletedServices() {
+      if (!localStorage.getItem('completedServices')) {
+        const exampleServices = [
+          {
+            technician: 'tecnico1',
+            client: 'Cliente A',
+            description: 'Reparação de canalização',
+            category: 'Canalização',
+            date: '2024-04-01',
+            evaluation: 4
+          },
+          {
+            technician: 'tecnico1',
+            client: 'Cliente B',
+            description: 'Instalação de ar condicionado',
+            category: 'Climatização',
+            date: '2024-04-10',
+            evaluation: 5
+          },
+          {
+            technician: 'tecnico2',
+            client: 'Cliente C',
+            description: 'Reparação elétrica',
+            category: 'Eletricidade',
+            date: '2024-03-25',
+            evaluation: null
+          }
+        ];
+        localStorage.setItem('completedServices', JSON.stringify(exampleServices));
+      }
+    }
+
     // Carrega serviços concluídos do localStorage filtrados pelo técnico autenticado
     const serviceList = document.getElementById('serviceList');
 
@@ -87,6 +120,7 @@
       });
     }
 
+    initializeExampleCompletedServices();
     renderServices();
 
     // Funcionalidade do botão sair
