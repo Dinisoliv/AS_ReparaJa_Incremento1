@@ -71,6 +71,49 @@
       box-sizing: border-box;
       resize: vertical;
     }
+    /* Modal styles */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+    .modal {
+      background: white;
+      padding: 20px;
+      border-radius: 6px;
+      max-width: 400px;
+      width: 90%;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    }
+    .modal h3 {
+      margin-top: 0;
+    }
+    .modal-buttons {
+      margin-top: 20px;
+      text-align: right;
+    }
+    .modal-buttons button {
+      margin-left: 10px;
+      padding: 6px 12px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .modal-confirm-btn {
+      background-color: #28a745;
+      color: white;
+    }
+    .modal-cancel-btn {
+      background-color: #dc3545;
+      color: white;
+    }
   </style>
 </head>
 <body>
@@ -93,7 +136,28 @@
   <main class="main-content">
     <h1>Trabalhos Atribuídos</h1>
     <ul id="jobList" class="job-list">
-      <!-- Os trabalhos serão inseridos dinamicamente aqui -->
+      <li class="job-item">
+        <strong>Cliente:</strong> Cliente A<br/>
+        <strong>Morada:</strong> Rua das Flores, 123<br/>
+        <strong>Data:</strong> 2024-04-15<br/>
+        <strong>Hora:</strong> 10:00<br/>
+        <strong>Tipo de Trabalho:</strong> Canalização<br/>
+        <strong>Descrição:</strong> Reparação de cano partido<br/>
+        <button class="cancel-btn">Cancelar Trabalho</button>
+        <button class="mark-completed-btn">Marcar como Concluído</button>
+        <button class="chat-btn">Chat</button>
+      </li>
+      <li class="job-item">
+        <strong>Cliente:</strong> Cliente B<br/>
+        <strong>Morada:</strong> Avenida Central, 456<br/>
+        <strong>Data:</strong> 2024-04-18<br/>
+        <strong>Hora:</strong> 14:00<br/>
+        <strong>Tipo de Trabalho:</strong> Eletricidade<br/>
+        <strong>Descrição:</strong> Instalação de tomada<br/>
+        <button class="cancel-btn">Cancelar Trabalho</button>
+        <button class="mark-completed-btn">Marcar como Concluído</button>
+      <button class="chat-btn">Chat</button>
+      </li>
     </ul>
 
     <div class="chat-container" style="display:none;">
@@ -105,57 +169,19 @@
     </div>
   </main>
 
+  <div id="modalOverlay" class="modal-overlay">
+    <div class="modal">
+      <h3 id="modalTitle"></h3>
+      <p id="modalMessage"></p>
+      <textarea id="modalJustification" placeholder="Insira a justificação para o cancelamento" style="width: 100%; height: 80px; margin-top: 10px; box-sizing: border-box;"></textarea>
+      <div class="modal-buttons">
+        <button id="modalConfirmBtn" class="modal-confirm-btn">Confirmar</button>
+        <button id="modalCancelBtn" class="modal-cancel-btn">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
   <script>
-    // Inicializar dados de exemplo para trabalhos atribuídos no localStorage, se não existirem
-    function initializeExampleAssignedJobs() {
-      if (!localStorage.getItem('assignedJobs')) {
-        const exampleJobs = [
-          {
-            id: 1,
-            technician: 'Technician123',
-            client: 'Cliente A',
-            address: 'Rua das Flores, 123',
-            date: '2024-04-15',
-            time: '10:00',
-            category: 'Canalização',
-            description: 'Reparação de cano partido',
-            chat: [
-              { sender: 'Cliente A', text: 'Olá, quando pode vir?' },
-              { sender: 'Técnico', text: 'Amanhã às 10h está bom?' }
-            ],
-            status: 'assigned' // assigned, cancelled, completed
-          },
-          {
-            id: 2,
-            technician: 'Technician123',
-            client: 'Cliente B',
-            address: 'Avenida Central, 456',
-            date: '2024-04-18',
-            time: '14:00',
-            category: 'Eletricidade',
-            description: 'Instalação de tomada',
-            chat: [],
-            status: 'assigned'
-          }
-        ];
-        localStorage.setItem('assignedJobs', JSON.stringify(exampleJobs));
-      }
-    }
-
-    // Obter trabalhos atribuídos do localStorage filtrados pelo técnico autenticado
-    function getAssignedJobs() {
-      const loggedTechnician = 'Technician123';
-      const jobs = localStorage.getItem('assignedJobs');
-      if (!jobs) return [];
-      const allJobs = JSON.parse(jobs);
-      return allJobs.filter(job => job.technician === loggedTechnician && job.status === 'assigned');
-    }
-
-    // Atualizar trabalhos no localStorage
-    function updateAssignedJobs(jobs) {
-      localStorage.setItem('assignedJobs', JSON.stringify(jobs));
-    }
-
     const jobList = document.getElementById('jobList');
     const chatContainer = document.querySelector('.chat-container');
     const chatClientName = document.getElementById('chatClientName');
@@ -164,108 +190,39 @@
     const sendChatBtn = document.getElementById('sendChatBtn');
     const closeChatBtn = document.getElementById('closeChatBtn');
 
-    let currentChatJobId = null;
+    const modalOverlay = document.getElementById('modalOverlay');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalMessage = document.getElementById('modalMessage');
+    const modalConfirmBtn = document.getElementById('modalConfirmBtn');
+    const modalCancelBtn = document.getElementById('modalCancelBtn');
 
-    function renderJobs() {
-      jobList.innerHTML = '';
-      const assignedJobs = getAssignedJobs();
-      if (assignedJobs.length === 0) {
-        jobList.innerHTML = '<li>Não há trabalhos atribuídos.</li>';
-        return;
+    // Persistent jobs array to maintain state
+    const jobs = [
+      {
+        id: 1,
+        client: 'Cliente A',
+        chat: [
+          { sender: 'Cliente A', text: 'Olá, quando pode vir?' },
+          { sender: 'Técnico', text: 'Amanhã às 10h está bom?' }
+        ],
+        status: 'assigned' // possible values: assigned, canceled, completed
+      },
+      {
+        id: 2,
+        client: 'Cliente B',
+        chat: [],
+        status: 'assigned'
+      },
+      {
+        id: 3,
+        client: 'Cliente C',
+        chat: [],
+        status: 'assigned'
       }
-      assignedJobs.forEach(job => {
-        const li = document.createElement('li');
-        li.className = 'job-item';
-        li.innerHTML = '<strong>Cliente:</strong> ' + job.client + '<br/>' +
-          '<strong>Morada:</strong> ' + (job.address || 'N/D') + '<br/>' +
-          '<strong>Data:</strong> ' + (job.date || 'N/D') + '<br/>' +
-          '<strong>Hora:</strong> ' + (job.time || 'N/D') + '<br/>' +
-          '<strong>Tipo de Trabalho:</strong> ' + (job.category || 'Geral') + '<br/>' +
-          '<strong>Descrição:</strong> ' + job.description + '<br/>' +
-          '<textarea class="justify-input" placeholder="Insere justificação para o cancelamento" data-id="' + job.id + '"></textarea><br/>' +
-          '<button class="cancel-btn" data-id="' + job.id + '">Cancelar Trabalho</button>' +
-          '<button class="mark-completed-btn" data-id="' + job.id + '">Marcar como Concluído</button>' +
-          '<button class="chat-btn" data-id="' + job.id + '">Chat</button>';
-        jobList.appendChild(li);
-      });
+    ];
 
-      // Eventos para os botões de cancelar
-      document.querySelectorAll('.cancel-btn').forEach(button => {
-        button.addEventListener('click', () => {
-          const jobId = parseInt(button.getAttribute('data-id'));
-          const justificationInput = document.querySelector('.justify-input[data-id="' + jobId + '"]');
-          const justification = justificationInput.value.trim();
-          if (!justification) {
-            alert('Por favor, insere uma justificação para o cancelamento.');
-            return;
-          }
-          cancelJob(jobId, justification);
-        });
-      });
-
-      // Eventos para os botões de marcar como concluído
-      document.querySelectorAll('.mark-completed-btn').forEach(button => {
-        button.addEventListener('click', () => {
-          const jobId = parseInt(button.getAttribute('data-id'));
-          markJobCompleted(jobId);
-        });
-      });
-
-      // Eventos para os botões de chat
-      document.querySelectorAll('.chat-btn').forEach(button => {
-        button.addEventListener('click', () => {
-          const jobId = parseInt(button.getAttribute('data-id'));
-          openChat(jobId);
-        });
-      });
-    }
-
-    function cancelJob(jobId, justification) {
-      const allJobs = JSON.parse(localStorage.getItem('assignedJobs')) || [];
-      const jobIndex = allJobs.findIndex(job => job.id === jobId);
-      if (jobIndex === -1) {
-        alert('Trabalho não encontrado.');
-        return;
-      }
-      allJobs[jobIndex].status = 'cancelled';
-      allJobs[jobIndex].cancellationJustification = justification;
-      updateAssignedJobs(allJobs);
-      alert('Trabalho cancelado e justificação guardada.');
-      renderJobs();
-      closeChatIfOpen(jobId);
-    }
-
-    function markJobCompleted(jobId) {
-      const allJobs = JSON.parse(localStorage.getItem('assignedJobs')) || [];
-      const jobIndex = allJobs.findIndex(job => job.id === jobId);
-      if (jobIndex === -1) {
-        alert('Trabalho não encontrado.');
-        return;
-      }
-      allJobs[jobIndex].status = 'completed';
-      updateAssignedJobs(allJobs);
-      alert('Trabalho marcado como concluído.');
-      renderJobs();
-      closeChatIfOpen(jobId);
-    }
-
-    function openChat(jobId) {
-      const allJobs = JSON.parse(localStorage.getItem('assignedJobs')) || [];
-      const job = allJobs.find(j => j.id === jobId);
-      if (!job) return;
-      currentChatJobId = jobId;
-      chatClientName.textContent = job.client;
-      chatContainer.style.display = 'block';
-      renderChatMessages(job.chat || []);
-    }
-
-    function closeChatIfOpen(jobId) {
-      if (currentChatJobId === jobId) {
-        chatContainer.style.display = 'none';
-        currentChatJobId = null;
-        chatMessages.innerHTML = '';
-      }
-    }
+    let currentChatJobIndex = null;
+    let currentModalResolve = null;
 
     function renderChatMessages(messages) {
       chatMessages.innerHTML = '';
@@ -277,39 +234,123 @@
       chatMessages.scrollTop = chatMessages.scrollHeight;
     }
 
+    function openChat(jobId) {
+      const job = jobs.find(j => j.id === jobId);
+      if (!job) return;
+      currentChatJobIndex = jobId;
+      chatClientName.textContent = job.client;
+      chatContainer.style.display = 'block';
+      renderChatMessages(job.chat);
+    }
+
+    function closeChat() {
+      chatContainer.style.display = 'none';
+      currentChatJobIndex = null;
+      chatMessages.innerHTML = '';
+      chatInput.value = '';
+    }
+
     sendChatBtn.addEventListener('click', () => {
       const message = chatInput.value.trim();
-      if (message && currentChatJobId !== null) {
-        const allJobs = JSON.parse(localStorage.getItem('assignedJobs')) || [];
-        const jobIndex = allJobs.findIndex(job => job.id === currentChatJobId);
-        if (jobIndex === -1) {
-          alert('Trabalho não encontrado.');
-          return;
-        }
+      if (message && currentChatJobIndex !== null) {
+        const job = jobs.find(j => j.id === currentChatJobIndex);
+        if (!job) return;
         const newMessage = { sender: 'Técnico', text: message };
-        if (!allJobs[jobIndex].chat) {
-          allJobs[jobIndex].chat = [];
-        }
-        allJobs[jobIndex].chat.push(newMessage);
-        updateAssignedJobs(allJobs);
-        renderChatMessages(allJobs[jobIndex].chat);
+        job.chat.push(newMessage);
+        renderChatMessages(job.chat);
         chatInput.value = '';
       }
     });
 
     closeChatBtn.addEventListener('click', () => {
-      chatContainer.style.display = 'none';
-      currentChatJobId = null;
-      chatMessages.innerHTML = '';
+      closeChat();
     });
 
-    // Inicializar dados e renderizar
-    initializeExampleAssignedJobs();
-    renderJobs();
+    function showModal(title, message, showJustification = false) {
+      modalTitle.textContent = title;
+      modalMessage.textContent = message;
+      modalOverlay.style.display = 'flex';
+      modalJustification.style.display = showJustification ? 'block' : 'none';
+      if (showJustification) {
+        modalJustification.value = '';
+        modalJustification.focus();
+      }
 
-    // Terminar sessão
-    document.getElementById('logoutBtn').addEventListener('click', function() {
-      sessionStorage.removeItem('loggedTechnician');
+      return new Promise((resolve) => {
+        currentModalResolve = resolve;
+      });
+    }
+
+    modalConfirmBtn.addEventListener('click', () => {
+      modalOverlay.style.display = 'none';
+      if (currentModalResolve) {
+        currentModalResolve(true);
+        currentModalResolve = null;
+      }
+    });
+
+    modalCancelBtn.addEventListener('click', () => {
+      modalOverlay.style.display = 'none';
+      if (currentModalResolve) {
+        currentModalResolve(false);
+        currentModalResolve = null;
+      }
+    });
+
+    // Add event listeners to buttons in job list
+    function addJobListEventListeners() {
+      const jobItems = document.querySelectorAll('.job-item');
+      jobItems.forEach((item, index) => {
+        const cancelBtn = item.querySelector('.cancel-btn');
+        const completeBtn = item.querySelector('.mark-completed-btn');
+        const chatBtn = item.querySelector('.chat-btn');
+        const justifyInput = item.querySelector('.justify-input');
+
+        const jobId = index + 1; // Assuming order matches jobs array
+
+        cancelBtn.addEventListener('click', async () => {
+          const job = jobs.find(j => j.id === jobId);
+          if (!job) return;
+          const confirmed = await showModal('Confirmar Cancelamento', `Por favor, insira a justificação para o cancelamento do trabalho para ${job.client}:`, true);
+          if (!confirmed) return;
+          const justification = modalJustification.value.trim();
+          if (!justification) {
+            alert('A justificação é obrigatória para cancelar o trabalho.');
+            return;
+          }
+          job.status = 'canceled';
+          job.cancellationJustification = justification;
+          // Visual mark the job item
+          item.style.opacity = '0.5';
+          item.style.textDecoration = 'line-through';
+          cancelBtn.disabled = true;
+          completeBtn.disabled = true;
+          chatBtn.disabled = true;
+        });
+
+        completeBtn.addEventListener('click', async () => {
+          const job = jobs.find(j => j.id === jobId);
+          if (!job) return;
+          const confirmed = await showModal('Confirmar Conclusão', `Tem a certeza que deseja marcar o trabalho para ${job.client} como concluído?`);
+          if (!confirmed) return;
+          job.status = 'completed';
+          // Visual mark the job item
+          item.style.opacity = '0.5';
+          item.style.textDecoration = 'line-through';
+          cancelBtn.disabled = true;
+          completeBtn.disabled = true;
+          chatBtn.disabled = true;
+          justifyInput.disabled = true;
+        });
+
+        chatBtn.addEventListener('click', () => {
+          openChat(jobId);
+        });
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      addJobListEventListeners();
     });
   </script>
 </body>

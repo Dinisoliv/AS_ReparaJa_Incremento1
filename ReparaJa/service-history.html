@@ -49,59 +49,44 @@
   </main>
 
   <script>
-    // Inicializar dados de exemplo para serviços concluídos no localStorage, se não existirem
-    function initializeExampleCompletedServices() {
-      if (!localStorage.getItem('completedServices')) {
-        const exampleServices = [
-          {
-            technician: 'tecnico1',
-            client: 'Cliente A',
-            description: 'Reparação de canalização',
-            category: 'Canalização',
-            date: '2024-04-01',
-            evaluation: 4
-          },
-          {
-            technician: 'tecnico1',
-            client: 'Cliente B',
-            description: 'Instalação de ar condicionado',
-            category: 'Climatização',
-            date: '2024-04-10',
-            evaluation: 5
-          },
-          {
-            technician: 'tecnico2',
-            client: 'Cliente C',
-            description: 'Reparação elétrica',
-            category: 'Eletricidade',
-            date: '2024-03-25',
-            evaluation: null
-          }
-        ];
-        localStorage.setItem('completedServices', JSON.stringify(exampleServices));
+    // Example completed services data without using localStorage
+    const exampleServices = [
+      {
+        technician: 'tecnico1',
+        client: 'Cliente A',
+        description: 'Reparação de canalização',
+        category: 'Canalização',
+        date: '2024-04-01',
+        evaluation: 4
+      },
+      {
+        technician: 'tecnico1',
+        client: 'Cliente B',
+        description: 'Instalação de ar condicionado',
+        category: 'Climatização',
+        date: '2024-04-10',
+        evaluation: 5
+      },
+      {
+        technician: 'tecnico2',
+        client: 'Cliente C',
+        description: 'Reparação elétrica',
+        category: 'Eletricidade',
+        date: '2024-03-25',
+        evaluation: null
       }
-    }
+    ];
 
-    // Carrega serviços concluídos do localStorage filtrados pelo técnico autenticado
+    // Carrega serviços concluídos do array filtrados pelo técnico autenticado
     const serviceList = document.getElementById('serviceList');
 
     function getCompletedServices() {
-      const services = localStorage.getItem('completedServices');
-      return services ? JSON.parse(services) : [];
-    }
-
-    function getLoggedTechnician() {
-      return sessionStorage.getItem('loggedTechnician');
+      return exampleServices;
     }
 
     function renderServices() {
       serviceList.innerHTML = '';
-      const loggedTechnician = getLoggedTechnician();
-      if (!loggedTechnician) {
-        serviceList.innerHTML = '<li>Por favor, inicie sessão para ver o histórico de serviços.</li>';
-        return;
-      }
-      const completedServices = getCompletedServices().filter(s => s.technician === loggedTechnician);
+      const completedServices = getCompletedServices();
       if (completedServices.length === 0) {
         serviceList.innerHTML = '<li>Não foram encontrados serviços concluídos.</li>';
         return;
@@ -120,7 +105,6 @@
       });
     }
 
-    initializeExampleCompletedServices();
     renderServices();
 
     // Funcionalidade do botão sair

@@ -7,60 +7,133 @@
   <link rel="stylesheet" href="styles.css" />
   <style>
     .bookings-list {
-      max-width: 800px;
-      margin: 2rem auto;
-      padding: 0;
       list-style: none;
+      padding: 0;
+      max-width: 800px;
+      margin: 20px auto;
     }
     .booking-item {
-      background-color: white;
       border: 1px solid #2a4d14;
-      border-radius: 5px;
-      padding: 1rem;
-      margin-bottom: 1rem;
+      padding: 15px 20px;
+      margin-bottom: 15px;
+      border-radius: 6px;
+      background-color: #fafafa;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
     }
-    .booking-item button {
-      margin-top: 0.5rem;
-      background-color: #d9534f;
+    .booking-item strong {
+      display: inline-block;
+      width: 130px;
+      color: #555;
+    }
+    .buttons-container {
+      margin-top: 10px;
+    }
+    .cancel-btn {
+      background-color: #dc3545;
       color: white;
       border: none;
-      padding: 0.5rem 1rem;
-      font-size: 0.9rem;
-      font-weight: 600;
-      border-radius: 5px;
+      padding: 8px 14px;
       cursor: pointer;
+      border-radius: 4px;
+      margin-right: 10px;
+      font-weight: bold;
       transition: background-color 0.3s ease;
     }
-    .booking-item button:hover {
-      background-color: #c9302c;
+    .cancel-btn:hover {
+      background-color: #b02a37;
     }
-    /* Chat styles adapted from assigned-jobs.html */
+    .chat-btn {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      padding: 8px 14px;
+      cursor: pointer;
+      border-radius: 4px;
+      font-weight: bold;
+      transition: background-color 0.3s ease;
+    }
+    .chat-btn:hover {
+      background-color: #0056b3;
+    }
     .chat-container {
       border: 1px solid #ccc;
-      padding: 10px;
-      margin: 2rem auto;
+      padding: 15px;
+      margin: 20px auto;
       max-width: 600px;
       background: #fff;
+      border-radius: 6px;
+      box-shadow: 0 0 8px rgba(0,0,0,0.1);
       display: none;
     }
     .chat-header {
       font-weight: bold;
       margin-bottom: 10px;
+      color: green;
     }
     .chat-messages {
       height: 200px;
       overflow-y: auto;
       border: 1px solid #ddd;
-      padding: 8px;
+      padding: 10px;
       margin-bottom: 10px;
       background: #f9f9f9;
       white-space: pre-wrap;
+      border-radius: 4px;
+      font-size: 0.9em;
+      color: #333;
     }
     .chat-input {
       width: 100%;
       padding: 8px;
       box-sizing: border-box;
       margin-bottom: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 1em;
+    }
+    #modalOverlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      background: rgba(0,0,0,0.5);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+    }
+    #modal {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      max-width: 400px;
+      width: 90%;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    }
+    #modalContent {
+      margin-bottom: 15px;
+    }
+    #modalCancelBtn, #modalOkBtn {
+      padding: 5px 10px;
+      font-weight: bold;
+      border-radius: 4px;
+      border: none;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    #modalCancelBtn {
+      background-color: #dc3545;
+      color: white;
+      margin-right: 10px;
+    }
+    #modalCancelBtn:hover {
+      background-color: #b02a37;
+    }
+    #modalOkBtn {
+      background-color: darkgreen;
+      color: white;
+    }
+    #modalOkBtn:hover {
+      background-color: green;
     }
   </style>
 </head>
@@ -73,17 +146,19 @@
     <ul class="navbar-links">
       <li><a href="client-dashboard.html">Painel</a></li>
       <li><a href="schedule-service.html">Agendar Serviço</a></li>
-      <li><a href="booked-services.html">Serviços Agendados</a></li>
+      <li><a href="booked-services.html" class="active">Serviços Agendados</a></li>
       <li><a href="service-history-client.html">Histórico de Serviços</a></li>
       <li><a href="account-info-client.html">Informações da Conta</a></li>
       <li><a href="contact.html">Contacto</a></li>
       <li><a href="login-client.html" id="logoutBtn">Terminar Sessão</a></li>
     </ul>
   </nav>
+
   <main class="main-content">
     <h1>Serviços Agendados</h1>
-    <p>Aqui pode consultar e gerir os seus serviços agendados.</p>
-    <ul id="bookingsList" class="bookings-list"></ul>
+    <ul id="bookingsList" class="bookings-list">
+      <!-- Bookings will be dynamically inserted here -->
+    </ul>
 
     <div class="chat-container" id="chatContainer">
       <div class="chat-header">Chat com Técnico: <span id="chatTechnicianName"></span></div>
@@ -93,13 +168,23 @@
       <button id="closeChatBtn" style="margin-top: 8px;">Fechar Chat</button>
     </div>
   </main>
+
+  <div id="modalOverlay">
+    <div id="modal">
+      <div id="modalContent"></div>
+      <div style="text-align: right;">
+        <button id="modalCancelBtn">Cancelar</button>
+        <button id="modalOkBtn">OK</button>
+      </div>
+    </div>
+  </div>
+
   <script>
     function getBookings() {
       const bookings = localStorage.getItem('bookings');
       if (bookings) {
         return JSON.parse(bookings);
       } else {
-        // Exemplo de serviços se não existirem
         const exampleBookings = [
           {
             client: 'exampleClient',
@@ -131,8 +216,8 @@
       localStorage.setItem('bookings', JSON.stringify(bookings));
     }
 
-    function getLoggedClient() {
-      return sessionStorage.getItem('loggedClient');
+    function getLoggedTechnician() {
+      return sessionStorage.getItem('loggedTechnician') || 'exampleTechnician';
     }
 
     const bookingsList = document.getElementById('bookingsList');
@@ -143,55 +228,81 @@
     const sendChatBtn = document.getElementById('sendChatBtn');
     const closeChatBtn = document.getElementById('closeChatBtn');
 
+    const modalOverlay = document.getElementById('modalOverlay');
+    const modalContent = document.getElementById('modalContent');
+    const modalCancelBtn = document.getElementById('modalCancelBtn');
+    const modalOkBtn = document.getElementById('modalOkBtn');
+
     let currentChatBookingIndex = null;
+    let modalResolve;
+
+    function showModal(contentHtml) {
+      modalContent.innerHTML = contentHtml;
+      modalOverlay.style.display = 'flex';
+      return new Promise((resolve) => {
+        modalResolve = resolve;
+      });
+    }
+
+    modalCancelBtn.addEventListener('click', () => {
+      modalOverlay.style.display = 'none';
+      modalResolve(false);
+    });
+
+    modalOkBtn.addEventListener('click', () => {
+      modalOverlay.style.display = 'none';
+      modalResolve(true);
+    });
 
     function renderBookings() {
       bookingsList.innerHTML = '';
-
-      const bookings = getBookings();
-
+      const bookings = getBookings().filter(b => b.technician === getLoggedTechnician() && b.status === 'Agendado');
       if (bookings.length === 0) {
-        bookingsList.innerHTML = '<li>Nenhum serviço agendado.</li>';
+        bookingsList.innerHTML = '<li>Não há serviços agendados.</li>';
         return;
       }
-
       bookings.forEach((booking, index) => {
-        if (!booking.chat) {
-          booking.chat = [];
-        }
         const li = document.createElement('li');
         li.className = 'booking-item';
         li.innerHTML = `
-          <strong>Técnico:</strong> ${booking.technician}<br/>
+          <strong>Cliente:</strong> ${booking.client}<br/>
           <strong>Data:</strong> ${booking.date}<br/>
           <strong>Hora:</strong> ${booking.time}<br/>
           <strong>Status:</strong> ${booking.status || 'Desconhecido'}<br/>
           ${booking.address ? `<strong>Endereço:</strong> ${booking.address}<br/>` : ''}
           ${booking.category ? `<strong>Categoria:</strong> ${booking.category}<br/>` : ''}
-          <button data-index="${index}" class="cancel-btn">Cancelar</button>
-<button data-index="${index}" class="chat-btn" style="background-color: #007bff; margin-left: 0.5rem;">Chat</button>
+          <div class="buttons-container">
+            <button class="cancel-btn" data-index="${index}">Cancelar</button>
+            <button class="chat-btn" data-index="${index}">Chat</button>
+          </div>
         `;
         bookingsList.appendChild(li);
+      });
 
-        // Add cancel button event listener
-        const cancelBtn = li.querySelector('.cancel-btn');
-        cancelBtn.addEventListener('click', () => {
-          bookings.splice(index, 1);
-          saveBookings(bookings);
-          renderBookings();
-          if (currentChatBookingIndex === index) {
-            closeChat();
+      document.querySelectorAll('.cancel-btn').forEach(button => {
+        button.addEventListener('click', async () => {
+          const index = parseInt(button.getAttribute('data-index'));
+          const booking = getBookings()[index];
+          if (!booking) return;
+          const confirmed = await showModal('Tem a certeza que deseja cancelar este serviço?');
+          if (confirmed) {
+            const bookings = getBookings();
+            bookings[index].status = 'Cancelado';
+            saveBookings(bookings);
+            renderBookings();
+            if (currentChatBookingIndex === index) {
+              closeChat();
+            }
           }
-        });
-
-        // Add chat button event listener
-        const chatBtn = li.querySelector('.chat-btn');
-        chatBtn.addEventListener('click', () => {
-          openChat(index);
         });
       });
 
-      saveBookings(bookings);
+      document.querySelectorAll('.chat-btn').forEach(button => {
+        button.addEventListener('click', (e) => {
+          const index = parseInt(button.getAttribute('data-index'));
+          openChat(index);
+        });
+      });
     }
 
     function openChat(index) {
@@ -227,8 +338,8 @@
         const bookings = getBookings();
         const booking = bookings[currentChatBookingIndex];
         if (!booking) return;
-        const loggedClient = getLoggedClient() || 'Cliente';
-        const newMessage = { sender: loggedClient, text: message };
+        const loggedTechnician = getLoggedTechnician();
+        const newMessage = { sender: loggedTechnician, text: message };
         if (!booking.chat) {
           booking.chat = [];
         }
@@ -243,11 +354,9 @@
       closeChat();
     });
 
-    // Call renderBookings on page load
     document.addEventListener('DOMContentLoaded', () => {
       renderBookings();
     });
   </script>
 </body>
 </html>
-
