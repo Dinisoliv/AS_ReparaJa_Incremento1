@@ -197,12 +197,22 @@
             chat: []
           },
           {
-            client: 'exampleClient',
+            client: 'Client123',
             technician: 'Bob Lee',
-            date: '2023-06-20',
-            time: '10:30',
-            address: 'Avenida dos Carvalhos 456',
-            category: 'Computadores',
+            date: '2023-06-22',
+            time: '11:00',
+            address: 'Rua Nova 456',
+            category: 'Eletrodomésticos',
+            status: 'Agendado',
+            chat: []
+          },
+          {
+            client: 'Client123',
+            technician: 'Carlos Silva',
+            date: '2023-07-03',
+            time: '16:30',
+            address: 'Avenida Central 789',
+            category: 'Canalização',
             status: 'Agendado',
             chat: []
           }
@@ -210,6 +220,11 @@
         localStorage.setItem('bookings', JSON.stringify(exampleBookings));
         return exampleBookings;
       }
+    }
+
+    // Função para obter o cliente logado
+    function getLoggedClient() {
+      return sessionStorage.getItem('loggedClient') || 'exampleClient';
     }
 
     function saveBookings(bookings) {
@@ -256,7 +271,8 @@
 
     function renderBookings() {
       bookingsList.innerHTML = '';
-      const bookings = getBookings().filter(b => b.technician === getLoggedTechnician() && b.status === 'Agendado');
+      // Filtra bookings do cliente logado e status Agendado
+      const bookings = getBookings().filter(b => b.client === getLoggedClient() && b.status === 'Agendado');
       if (bookings.length === 0) {
         bookingsList.innerHTML = '<li>Não há serviços agendados.</li>';
         return;
@@ -265,7 +281,7 @@
         const li = document.createElement('li');
         li.className = 'booking-item';
         li.innerHTML = `
-          <strong>Cliente:</strong> ${booking.client}<br/>
+          <strong>Técnico:</strong> ${booking.technician}<br/>
           <strong>Data:</strong> ${booking.date}<br/>
           <strong>Hora:</strong> ${booking.time}<br/>
           <strong>Status:</strong> ${booking.status || 'Desconhecido'}<br/>
