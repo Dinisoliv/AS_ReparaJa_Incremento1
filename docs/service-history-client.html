@@ -86,160 +86,203 @@
       const services = localStorage.getItem('completedServices');
       if (services) {
         const parsedServices = JSON.parse(services);
-        const hasClientData = parsedServices.some(s => s.client === loggedClient);
-        if (!hasClientData) {
-          const exampleServices = [
-            {
-              id: 10,
-              client: loggedClient,
-              technician: 'John Doe',
-              description: 'Reparo de ecrã de smartphone',
-              category: 'Eletrónica',
-              date: '2023-05-10',
-              evaluation: 4,
-              completed: true
-            },
-            {
-              id: 11,
-              client: loggedClient,
-              technician: 'Jane Smith',
-              description: 'Reparou porta de carregamento do portátil',
-              category: 'Computadores',
-              date: '2023-04-22',
-              evaluation: null,
-              completed: false
-            },
-            {
-              id: 12,
-              client: loggedClient,
-              technician: 'Mike Brown',
-              description: 'Substituição do motor da máquina de lavar',
-              category: 'Eletrodomésticos',
-              date: '2023-03-15',
-              evaluation: null,
-              completed: false
-            },
-            {
-              id: 13,
-              client: loggedClient,
-              technician: 'Anna White',
-              description: 'Reparou problema de refrigeração do frigorífico',
-              category: 'Eletrodomésticos',
-              date: '2023-02-28',
-              evaluation: 5,
-              completed: true
-            },
-            {
-              id: 14,
-              client: loggedClient,
-              technician: 'Carlos Silva',
-              description: 'Substituição da resistência do forno elétrico',
-              category: 'Eletrodomésticos',
-              date: '2023-06-01',
-              evaluation: null,
-              completed: false
-            },
-            {
-              id: 15,
-              client: loggedClient,
-              technician: 'Mariana Costa',
-              description: 'Reparação do motor do aspirador de pó',
-              category: 'Eletrodomésticos',
-              date: '2023-05-20',
-              evaluation: null,
-              completed: false
-            },
-            {
-              id: 16,
-              client: loggedClient,
-              technician: 'Pedro Gomes',
-              description: 'Troca do termostato da máquina de lavar louça',
-              category: 'Eletrodomésticos',
-              date: '2023-04-10',
-              evaluation: null,
-              completed: false
-            }
-          ];
-          localStorage.setItem('completedServices', JSON.stringify(exampleServices));
-          return exampleServices;
+        // Filter services to only those belonging to the logged client
+        const clientServices = parsedServices.filter(s => s.client === loggedClient);
+        if (clientServices.length === 0) {
+          // Return example services without saving to localStorage to avoid altering examples
+          return getExampleServices(loggedClient);
         }
-        return parsedServices;
+        return clientServices;
       } else {
-        const exampleServices = [
-          {
-            id: 1,
-            client: loggedClient,
-            technician: 'John Doe',
-            description: 'Reparo de ecrã de smartphone',
-            category: 'Eletrónica',
-            date: '2023-05-10',
-            evaluation: null,
-            completed: false
-          },
-          {
-            id: 2,
-            client: loggedClient,
-            technician: 'Jane Smith',
-            description: 'Reparou porta de carregamento do portátil',
-            category: 'Computadores',
-            date: '2023-04-22',
-            evaluation: null,
-            completed: false
-          },
-          {
-            id: 3,
-            client: loggedClient,
-            technician: 'Mike Brown',
-            description: 'Substituição do motor da máquina de lavar',
-            category: 'Eletrodomésticos',
-            date: '2023-03-15',
-            evaluation: null,
-            completed: false
-          },
-          {
-            id: 4,
-            client: loggedClient,
-            technician: 'Anna White',
-            description: 'Reparou problema de refrigeração do frigorífico',
-            category: 'Eletrodomésticos',
-            date: '2023-02-28',
-            evaluation: null,
-            completed: false
-          },
-          {
-            id: 5,
-            client: loggedClient,
-            technician: 'Carlos Silva',
-            description: 'Substituição da resistência do forno elétrico',
-            category: 'Eletrodomésticos',
-            date: '2023-06-01',
-            evaluation: null,
-            completed: false
-          },
-          {
-            id: 6,
-            client: loggedClient,
-            technician: 'Mariana Costa',
-            description: 'Reparação do motor do aspirador de pó',
-            category: 'Eletrodomésticos',
-            date: '2023-05-20',
-            evaluation: null,
-            completed: false
-          },
-          {
-            id: 7,
-            client: loggedClient,
-            technician: 'Pedro Gomes',
-            description: 'Troca do termostato da máquina de lavar louça',
-            category: 'Eletrodomésticos',
-            date: '2023-04-10',
-            evaluation: null,
-            completed: false
-          }
-        ];
-        localStorage.setItem('completedServices', JSON.stringify(exampleServices));
-        return exampleServices;
+        // Return example services without saving to localStorage to avoid altering examples
+        return getExampleServices(loggedClient);
       }
+    }
+
+    function getExampleServices(loggedClient) {
+      return [
+        {
+          id: 1,
+          client: loggedClient,
+          technician: 'John Doe',
+          description: 'Reparo de ecrã de smartphone',
+          category: 'Eletrónica',
+          date: '2023-05-10',
+          evaluation: null,
+          completed: false
+        },
+        {
+          id: 2,
+          client: loggedClient,
+          technician: 'Jane Smith',
+          description: 'Reparou porta de carregamento do portátil',
+          category: 'Computadores',
+          date: '2023-04-22',
+          evaluation: null,
+          completed: false
+        },
+        {
+          id: 3,
+          client: loggedClient,
+          technician: 'Mike Brown',
+          description: 'Substituição do motor da máquina de lavar',
+          category: 'Eletrodomésticos',
+          date: '2023-03-15',
+          evaluation: null,
+          completed: false
+        },
+        {
+          id: 4,
+          client: loggedClient,
+          technician: 'Anna White',
+          description: 'Reparou problema de refrigeração do frigorífico',
+          category: 'Eletrodomésticos',
+          date: '2023-02-28',
+          evaluation: null,
+          completed: false
+        },
+        {
+          id: 5,
+          client: loggedClient,
+          technician: 'Carlos Silva',
+          description: 'Substituição da resistência do forno elétrico',
+          category: 'Eletrodomésticos',
+          date: '2023-06-01',
+          evaluation: null,
+          completed: false
+        },
+        {
+          id: 6,
+          client: loggedClient,
+          technician: 'Mariana Costa',
+          description: 'Reparação do motor do aspirador de pó',
+          category: 'Eletrodomésticos',
+          date: '2023-05-20',
+          evaluation: null,
+          completed: false
+        },
+        {
+          id: 7,
+          client: loggedClient,
+          technician: 'Pedro Gomes',
+          description: 'Troca do termostato da máquina de lavar louça',
+          category: 'Eletrodomésticos',
+          date: '2023-04-10',
+          evaluation: null,
+          completed: false
+        }
+      ];
+    }
+
+    function renderServices() {
+      serviceList.innerHTML = '';
+      const loggedClient = getLoggedClient();
+      if (!loggedClient) {
+        serviceList.innerHTML = '<li>Por favor, inicie sessão para ver o histórico de serviços.</li>';
+        return;
+      }
+      const completedServices = getCompletedServices();
+      if (completedServices.length === 0) {
+        serviceList.innerHTML = '<li>Não foram encontrados serviços concluídos.</li>';
+        return;
+      }
+      completedServices.forEach(service => {
+        const li = document.createElement('li');
+        li.className = 'service-item';
+        li.innerHTML = `
+          <strong>Técnico:</strong> ${service.technician}<br/>
+          <strong>Descrição:</strong> ${service.description}<br/>
+          <strong>Categoria:</strong> ${service.category || 'Geral'}<br/>
+          <strong>Data:</strong> ${service.date}<br/>
+          <strong>Avaliação:</strong> ${service.evaluation ? service.evaluation + ' / 5' : 'Ainda não avaliado'}<br/>
+          ${!service.evaluation ? `<button class="evaluate-btn" data-id="${service.id}">Avaliar</button>` : ''}
+          ${!service.evaluation ? `<button class="reject-btn" data-id="${service.id}">Rejeitar</button>` : ''}
+          ${!service.completed ? `<button class="confirm-btn" data-id="${service.id}">Confirmar Conclusão</button>` : ''}
+        `;
+        serviceList.appendChild(li);
+      });
+
+      // Eventos de clique para os botões
+      document.querySelectorAll('.evaluate-btn').forEach(button => {
+        button.addEventListener('click', () => {
+          const serviceId = button.getAttribute('data-id');
+          promptRating(serviceId);
+        });
+      });
+
+      document.querySelectorAll('.reject-btn').forEach(button => {
+        button.addEventListener('click', async () => {
+          const serviceId = button.getAttribute('data-id');
+          const confirmed = await confirmAction('Tem a certeza de que pretende rejeitar este serviço concluído? Será redirecionado para o suporte.');
+          if (confirmed) {
+            rejectService(serviceId);
+          }
+        });
+      });
+
+      document.querySelectorAll('.confirm-btn').forEach(button => {
+        button.addEventListener('click', async () => {
+          const serviceId = button.getAttribute('data-id');
+          const confirmed = await confirmAction('Confirma a conclusão deste serviço?');
+          if (confirmed) {
+            markServiceCompleted(serviceId);
+          }
+        });
+      });
+    }
+
+    function markServiceCompleted(serviceId) {
+      const services = getCompletedServices();
+      const index = services.findIndex(s => s.id == serviceId);
+      if (index !== -1) {
+        services[index].completed = true;
+        // Save updated services to localStorage
+        saveClientServices(services);
+        renderServices();
+        confirmAction('Deseja avaliar o serviço agora?').then(confirmed => {
+          if (confirmed) {
+            promptRating(serviceId);
+          }
+        });
+      }
+    }
+
+    function saveEvaluation(serviceId, rating) {
+      const services = getCompletedServices();
+      const index = services.findIndex(s => s.id == serviceId);
+      if (index !== -1) {
+        services[index].evaluation = rating;
+        // Save updated services to localStorage
+        saveClientServices(services);
+        renderServices();
+      }
+    }
+
+    function saveClientServices(services) {
+      const loggedClient = getLoggedClient();
+      // Load all services from localStorage
+      const allServicesRaw = localStorage.getItem('completedServices');
+      let allServices = [];
+      if (allServicesRaw) {
+        allServices = JSON.parse(allServicesRaw);
+        // Remove services of the logged client
+        allServices = allServices.filter(s => s.client !== loggedClient);
+      }
+      // Add updated client services
+      allServices = allServices.concat(services);
+      localStorage.setItem('completedServices', JSON.stringify(allServices));
+    }
+
+    // Reset example services on logout
+    document.getElementById('logoutBtn').addEventListener('click', function() {
+      sessionStorage.removeItem('loggedClient');
+      // Reset completedServices to empty or remove client-specific services
+      resetExampleServices();
+    });
+
+    function resetExampleServices() {
+      // Remove all client-specific services from localStorage
+      localStorage.removeItem('completedServices');
     }
 
     function getLoggedClient() {
@@ -331,7 +374,8 @@
       const index = services.findIndex(s => s.id == serviceId);
       if (index !== -1) {
         services[index].completed = true;
-        localStorage.setItem('completedServices', JSON.stringify(services));
+        // Save updated services to localStorage
+        saveClientServices(services);
         renderServices();
         confirmAction('Deseja avaliar o serviço agora?').then(confirmed => {
           if (confirmed) {
@@ -346,7 +390,8 @@
       const index = services.findIndex(s => s.id == serviceId);
       if (index !== -1) {
         services[index].evaluation = rating;
-        localStorage.setItem('completedServices', JSON.stringify(services));
+        // Save updated services to localStorage
+        saveClientServices(services);
         renderServices();
       }
     }
